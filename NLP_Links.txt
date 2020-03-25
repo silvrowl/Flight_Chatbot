@@ -1,0 +1,47 @@
+NLP_Links.txt
+
+Briefs:
+https://drive.google.com/drive/folders/1k0Lsu5ItI8Rfz5dkijKt8IUJCm62wsiN
+
+NER Model
+
+A Travel company wants to create a chat product that allows users to query flight prices, hotels and car rentals through conversation.
+The 1st phase of the project is to create a POC model that is able to extract locations (to and from), dates and prices ranges from conversational text.
+
+Some ideas to get training data is:
+Twitter
+Wikipedia
+Instagram
+Travel websites
+
+https://en.wikipedia.org/wiki/Part-of-speech_tagging#History
+https://www.nltk.org/book/
+https://www.nltk.org/book/ch05.html
+https://www.freecodecamp.org/news/an-introduction-to-part-of-speech-tagging-and-the-hidden-markov-model-953d45338f24/
+
+Flight Problem
+1. NER from spacy API
+2. Parsing and tagging from nltk api
+3. en_core_web_sm or en_core_web_lr pretraind models from spacy
+4. chatter chat box api
+5. chatterbot api
+
+Other
+jewelery classifiation
+openai model zoo
+or tensorflow/keras image recognition model zoo
+webscraping with beautifulsoup
+
+https://jalammar.github.io/illustrated-transformer/
+
+https://www.machinecurve.com/index.php/2019/11/25/visualizing-keras-cnn-attention-saliency-maps/
+
+https://plot.ly/python/parallel-coordinates-plot/
+
+https://radimrehurek.com/gensim/models/word2vec.html#gensim.models.word2vec.Word2Vec
+
+https://medium.com/syncedreview/googles-albert-is-a-leaner-bert-achieves-sota-on-3-nlp-benchmarks-f64466dd583
+
+https://towardsdatascience.com/bert-explained-state-of-the-art-language-model-for-nlp-f8b21a9b6270
+
+https://setosa.io/ev/image-kernels/
