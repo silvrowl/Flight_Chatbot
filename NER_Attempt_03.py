@@ -11,7 +11,30 @@
    "cell_type": "code",
    "execution_count": 1,
    "metadata": {},
-   "outputs": [],
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "[nltk_data] Downloading package averaged_perceptron_tagger to\n",
+      "[nltk_data]     /home/dan/nltk_data...\n",
+      "[nltk_data]   Package averaged_perceptron_tagger is already up-to-\n",
+      "[nltk_data]       date!\n",
+      "[nltk_data] Downloading package punkt to /home/dan/nltk_data...\n",
+      "[nltk_data]   Package punkt is already up-to-date!\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 1,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
    "source": [
     "#All Imports\n",
     "import nltk, nltk.tag, nltk.chunk\n",
@@ -22,19 +45,22 @@
     "import string\n",
     "\n",
     "from datetime import date\n",
+    "from dateutil import parser\n",
+    "\n",
     "from nltk.tokenize import sent_tokenize\n",
     "from nltk.tokenize import word_tokenize\n",
     "from nltk.corpus import stopwords\n",
+    "\n",
     "from nltk.tag import UnigramTagger\n",
     "from nltk.corpus import brown\n",
+    "\n",
     "from nltk import conlltags2tree, tree2conlltags\n",
-    "from dateutil import parser\n",
     "from nltk.chunk import ChunkParserI \n",
     "from nltk.chunk.util import conlltags2tree \n",
     "from nltk.corpus import gazetteers \n",
     "\n",
-    "#nltk.download('averaged_perceptron_tagger')\n",
-    "#nltk.download('punkt')"
+    "nltk.download('averaged_perceptron_tagger')\n",
+    "nltk.download('punkt')"
    ]
   },
   {
@@ -59,7 +85,7 @@
    "source": [
     "Sample_Text_1 = [['Hi there'],\n",
     "               ['How can I help you?'],\n",
-    "               ['Are there any flights from Houston to Boston'],\n",
+    "               ['Are there any flights from Houston to San Diego'],\n",
     "               ['Yes, for which dates would you like?'],\n",
     "               ['June 3rd to June 18th'],\n",
     "               ['How much would like to spend?'],\n",
@@ -71,7 +97,7 @@
     "               ['How can i help you?'],\n",
     "               ['I would like to see if I can travel from Seattle to Chicago tomorrow'],\n",
     "               ['When would you like to come back'],\n",
-    "               ['In 5 days, but I am flexible on the day'],\n",
+    "               ['In 5 weeks, but I am flexible on the day'],\n",
     "               ['What is your budget'],\n",
     "               ['Less than fifteen hundred dollars'],\n",
     "               ['Great, Here are some options:']]\n",
@@ -440,7 +466,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 19,
+   "execution_count": 10,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -590,19 +616,19 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 20,
+   "execution_count": 14,
    "metadata": {},
    "outputs": [
     {
      "data": {
       "text/plain": [
-       "{'Locations': ['san diego', 'los angeles'],\n",
-       " 'Dates': [datetime.datetime(2020, 3, 1, 0, 0),\n",
-       "  datetime.datetime(2020, 3, 2, 0, 0)],\n",
-       " 'Money': []}"
+       "{'Locations': ['houston', 'san diego'],\n",
+       " 'Dates': [datetime.datetime(2020, 6, 3, 0, 0),\n",
+       "  datetime.datetime(2020, 6, 18, 0, 0)],\n",
+       " 'Money': ['500']}"
       ]
      },
-     "execution_count": 20,
+     "execution_count": 14,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -630,7 +656,7 @@
     "    return ner_out\n",
     "\n",
     "\n",
-    "travel_chat_preproc = word_preproc(Sample_Text_3)\n",
+    "travel_chat_preproc = word_preproc(Sample_Text_1)\n",
     "travel_ner_out = word_ner_all(travel_chat_preproc)\n",
     "\n",
     "travel_ner_out "
@@ -647,7 +673,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": null,
+   "execution_count": 15,
    "metadata": {},
    "outputs": [],
    "source": [
