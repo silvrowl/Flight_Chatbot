@@ -3,19 +3,23 @@
 
 # # Script to do Named Entity Recognition for the purposes of a travel chat bot
 
-# In[1]:
+# In[110]:
 
 
 #All Imports
 import nltk, nltk.tag, nltk.chunk
 import spacy
 import numpy as np
+import pandas as pd
 import re
 import datetime
 import string
+import pickle
+
 
 from datetime import date
 from dateutil import parser
+from fuzzywuzzy import fuzz
 
 from nltk.tokenize import sent_tokenize
 from nltk.tokenize import word_tokenize
@@ -37,14 +41,14 @@ nltk.download('punkt')
 
 # ## Create Training Data
 
-# In[2]:
+# In[111]:
 
 
 Sample_Text_1 = [['Hi there'],
                ['How can I help you?'],
-               ['Are there any flights from Houston to San Diego'],
+               ['Are there any flights from Toronto to San Diego'],
                ['Yes, for which dates would you like?'],
-               ['June 3rd to June 18th'],
+               ['June 3rd to 10th'],
                ['How much would like to spend?'],
                ['Under 500'],
                ['Great, Here are some options:']]
@@ -87,6 +91,9 @@ Sample_Text_5 = [['Hello'],
 
 Complete_Sample = Sample_Text_1 + Sample_Text_2 + Sample_Text_3 + Sample_Text_4 + Sample_Text_5
 
+with open('custom_list.pkl', 'wb') as f:
+    pickle.dump(Complete_Sample, f)
+
 Complete_Sample = Sample_Text_2
 
 
@@ -94,7 +101,7 @@ Complete_Sample = Sample_Text_2
 # - Replace written numbers with values
 # - Replace ASAP with today
 
-# In[3]:
+# In[112]:
 
 
 # Functions for turning text numbers into digits
@@ -202,7 +209,7 @@ def text2int (textnum, numwords={}):
     return curstring
 
 
-# In[4]:
+# In[113]:
 
 
 #Function for cleaning data using above function
@@ -222,7 +229,7 @@ def data_cleaning(sentence_list):
 
 # ## Tokenizer
 
-# In[5]:
+# In[114]:
 
 
 #Function for tokenizing the chat
@@ -242,7 +249,7 @@ def data_token(sentence_list):
     return token_word
 
 
-# In[6]:
+# In[115]:
 
 
 #Function for filtering stopwords and punctuation from tokenized words and lowercasing them
@@ -269,7 +276,7 @@ def filter_stopwords(token_word):
 
 # ## Post Tokenizaton Data Cleaning Massaging
 
-# In[7]:
+# In[116]:
 
 
 #Function for data cleaning post tokenization, replace suffixs, and some words.
@@ -304,7 +311,7 @@ def post_token_clean(filtered_sent):
 
 # ## Tagger
 
-# In[8]:
+# In[117]:
 
 
 # Function for tagging words using unigram and bigram taggers, based off brown corpus
@@ -334,38 +341,140 @@ def word_tagger(words):
 
 # ## Locations NER
 
-# In[9]:
+# In[118]:
+
+
+def match_score(tagged_word):
+    
+    airports = pd.read_csv('all_airports_clean.csv')
+    
+    user_input = tagged_word
+    
+    city_list = []
+    city_score = []
+    state_list = []
+    state_score = []
+    code_list = []
+
+    ### Fuzzy Matching
+    for t in np.arange(0,3587):
+
+        city = airports.loc[t,'City']
+        state = airports.loc[t,'State']
+        code = airports.loc[t,'Code']
+
+        city_list.append(city)
+        city_score.append(fuzz.ratio(str(city).lower(),user_input.lower()))
+
+        state_list.append(state)
+        state_score.append(fuzz.ratio(str(state).lower(),user_input.lower()))
+
+        code_list.append(code)
+
+    data_tuples = list(zip(city_list,city_score,state_list,state_score,code_list))
+    match_df = pd.DataFrame(data_tuples,columns=['city','city_score','state','state_score','code'])
+
+    if match_df['city_score'].max() > 80:
+        return True
+    
+    if match_df['state_score'].max() > 80:
+        return True
+    
+
+
+# In[119]:
+
+
+def match_score_list(tagged_word):
+    
+    airports = pd.read_csv('all_airports_clean.csv')
+    
+    user_input = tagged_word
+    
+    city_list = []
+    city_score = []
+    state_list = []
+    state_score = []
+    code_list = []
+
+    ### Fuzzy Matching
+    for t in np.arange(0,3587):
+
+        city = airports.loc[t,'City']
+        state = airports.loc[t,'State']
+        code = airports.loc[t,'Code']
+
+        city_list.append(city)
+        city_score.append(fuzz.ratio(str(city).lower(),user_input.lower()))
+
+        state_list.append(state)
+        state_score.append(fuzz.ratio(str(state).lower(),user_input.lower()))
+
+        code_list.append(code)
+
+    data_tuples = list(zip(city_list,city_score,state_list,state_score,code_list))
+    match_df = pd.DataFrame(data_tuples,columns=['city','city_score','state','state_score','code'])
+
+    ### Location Duplicates
+
+    match_sorted = match_df.sort_values(by='city_score', ascending=False)
+    state_sorted = match_df.sort_values(by='state_score', ascending=False)
+
+    if match_sorted['city_score'].max() > 90:
+        options_1 = match_sorted[match_sorted['city_score'] == match_sorted['city_score'].max()] 
+        return options_1.head(5)
+    
+
+    elif match_sorted['city_score'].max() > 75 and match_sorted['city_score'].max() > state_sorted['state_score'].max():
+
+        options_1 = match_sorted[match_sorted['city_score'] == match_sorted['city_score'].max()] 
+        return options_1.head(5)
+
+    else: 
+        if state_sorted['state_score'].max() > 75:
+            options_2 = state_sorted[state_sorted['state_score'] == match_sorted['state_score'].max()] 
+            return options_2.sample(5)
+        else:
+            return 'no options found'
+
+
+# In[120]:
 
 
 #Fucnction to compare words to gazetters word list to find locations
 
+#If fuzzy matches > 90 on place or state, tag as location
+
 def location_ner(words_tagged):
 
-    place_lower = [w.lower() for w in gazetteers.words()]
+    #place_lower = [w.lower() for w in gazetteers.words()]
 
     loc_tag = words_tagged
-
+        
     cnt=0
     for cnt in np.arange(0,len(words_tagged)):
-        if words_tagged[cnt][0] in place_lower:
+        if match_score(words_tagged[cnt][0]):
             if words_tagged[cnt][1] == 'NN':
                 loc_tag[cnt] = (words_tagged[cnt][0],'LOCATION') 
 
         if cnt < len(words_tagged)-1:       
             link_place = words_tagged[cnt][0] + ' ' + words_tagged[cnt+1][0]        
-            if link_place in place_lower:      
+            if match_score(link_place):      
                 if words_tagged[cnt][1] in ['JJ','NN'] and words_tagged[cnt+1][1] == 'NN':
                     loc_tag[cnt] = (link_place,'LOCATION') 
 
         cnt=cnt+1
         
     return loc_tag
+    
+    
+    return loc_tag
 
 
 # ## Time and Dates and Money NER
 # 
 
-# In[10]:
+# In[121]:
 
 
 #Function to find possible dates and timing and tag them as such
@@ -380,6 +489,8 @@ def dates_ner(words_tagged):
                   'jul','aug','sep','oct','nov','dec',
                    'day','days','week','weeks','months']
 
+    day_lower =['monday', 'tuesday','wednesday','thursday','friday','saturday','sunday']
+    
     cnt=0
     for cnt in np.arange(0,len(words_tagged)):
 
@@ -389,29 +500,48 @@ def dates_ner(words_tagged):
         if words_tagged[cnt][0] in month_lower:
             if words_tagged[cnt][1] == 'NN' or words_tagged[cnt][1] == 'NNS' or words_tagged[cnt][1] == 'JJ':
 
-                       
                 try:
                     date_p2 = words_tagged[cnt-1][0] 
                     int(date_p2)
                     time_tag[cnt] = (words_tagged[cnt][0] + ' ' + date_p2 ,'DATETIME')  
                 except:
                     cnt2=1    
-
-                      
                 try:
                     date_p1 = words_tagged[cnt+1][0]  
                     int(date_p1)
                     time_tag[cnt] = (words_tagged[cnt][0] + ' ' + date_p1,'DATETIME') 
                 except:
                     cnt2=1
+                    
+                try:
+                    date_p1 = words_tagged[cnt+2][0]  
+                    int(date_p1)
+                    time_tag[cnt+2] = (words_tagged[cnt][0] + ' ' + date_p1,'DATETIME') 
+                except:
+                    cnt2=1
+                    
+        elif words_tagged[cnt][0] in day_lower:
+            if words_tagged[cnt][1] == 'NN' or words_tagged[cnt][1] == 'NNS' or words_tagged[cnt][1] == 'JJ':
+                
+                try:
+                    date_p2 = words_tagged[cnt-1][0] 
+                    if date_p2 == 'next':
+                        time_tag[cnt] = (date_p2 + ' '  + words_tagged[cnt][0],'DATETIME-DAY')  
+                    else:
+                        time_tag[cnt] = (words_tagged[cnt][0],'DATETIME-DAY') 
+                    
+                except:
+                    cnt2=1       
+                    
         cnt=cnt+1
+
         
     return time_tag
 
 
 # ## Money NER
 
-# In[11]:
+# In[122]:
 
 
 # Function to find remaining numbers and say that they are numerical phrases
@@ -428,7 +558,7 @@ def money_ner(words_tagged):
 
 # ## Date Formatter
 
-# In[12]:
+# In[123]:
 
 
 #Function to parse dates found during ner
@@ -459,10 +589,26 @@ def date_formatter(Dates):
 
     return date_clean
 
+def date_formatter_2(Dates):
+    
+    date_clean = []
+    cnt=0
+    for d in Dates:
+        #print(d)
+        if 'next' in d[0]:
+            d_plus = 7
+            tmp = d[0].split(' ')
+            date_clean.append(parser.parse(tmp[1]) + datetime.timedelta(days=d_plus))
+
+        else:
+            date_clean.append(parser.parse(d[0]))    
+
+    return date_clean
+
 
 # ## NER Output
 
-# In[13]:
+# In[124]:
 
 
 #Function to place the tagged words into a dictionary
@@ -470,13 +616,18 @@ def date_formatter(Dates):
 def ner_output(final_tags):
 
     Locations = [tag[0] for tag in final_tags if tag[1] == 'LOCATION']  
+    
     Dates = [[tag[0]] for tag in final_tags if tag[1] == 'DATETIME']  
     Dates_Clean = date_formatter(Dates)
+    
+    Dates_2 = [[tag[0]] for tag in final_tags if tag[1] == 'DATETIME-DAY']  
+    Dates_Clean_2 = date_formatter_2(Dates_2)
+    
     Money = [tag[0] for tag in final_tags if tag[2] == 'B-NumPhrase']  
 
     ner_output = {
       "Locations": Locations,
-      "Dates": Dates_Clean,
+      "Dates": Dates_Clean + Dates_Clean_2,
       "Money": Money
     }
     
@@ -485,7 +636,7 @@ def ner_output(final_tags):
 
 # ## Main
 
-# In[14]:
+# In[125]:
 
 
 # Run the above functions, seperated into preprocessing and tagging/parsing functions
@@ -520,7 +671,7 @@ travel_ner_out
 # 
 # ###  Logic Engine to parse NE
 
-# In[15]:
+# In[126]:
 
 
 # If no second loaction, ask for start location
