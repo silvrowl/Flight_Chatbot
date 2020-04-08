@@ -9,6 +9,8 @@ from chatterbot import ChatBot
 from chatterbot.trainers import ListTrainer
 import NER_Attempt_02 as ner
 import pickle
+import pandas as pd
+import Response_Parsing as rp
 
 
 # In[2]:
@@ -53,11 +55,154 @@ print(custom_list_2)
 
 
 trainer = ListTrainer(bot)
-trainer.train(frames_list)
+#trainer.train(frames_list)
 trainer.train(custom_list_2)
 
 
 # In[6]:
+
+
+true = True
+false = False
+
+test = {
+  "Routes": [],
+  "Quotes": [
+    {
+      "QuoteId": 1,
+      "MinPrice": 80,
+      "Direct": true,
+      "OutboundLeg": {
+        "CarrierIds": [
+          1329
+        ],
+        "OriginId": 96474,
+        "DestinationId": 60987,
+        "DepartureDate": "2020-06-01T00:00:00"
+      },
+      "QuoteDateTime": "2020-04-08T09:32:00"
+    },
+    {
+      "QuoteId": 2,
+      "MinPrice": 78,
+      "Direct": true,
+      "OutboundLeg": {
+        "CarrierIds": [
+          838
+        ],
+        "OriginId": 96474,
+        "DestinationId": 60987,
+        "DepartureDate": "2020-06-02T00:00:00"
+      },
+      "QuoteDateTime": "2020-04-07T11:33:00"
+    },
+    {
+      "QuoteId": 3,
+      "MinPrice": 80,
+      "Direct": true,
+      "OutboundLeg": {
+        "CarrierIds": [
+          954
+        ],
+        "OriginId": 96474,
+        "DestinationId": 60987,
+        "DepartureDate": "2020-06-03T00:00:00"
+      },
+      "QuoteDateTime": "2020-04-08T09:42:00"
+    },
+    {
+      "QuoteId": 4,
+      "MinPrice": 80,
+      "Direct": true,
+      "OutboundLeg": {
+        "CarrierIds": [
+          954
+        ],
+        "OriginId": 96474,
+        "DestinationId": 60987,
+        "DepartureDate": "2020-06-04T00:00:00"
+      },
+      "QuoteDateTime": "2020-04-08T09:48:00"
+    },
+    {
+      "QuoteId": 5,
+      "MinPrice": 80,
+      "Direct": true,
+      "OutboundLeg": {
+        "CarrierIds": [
+          1361
+        ],
+        "OriginId": 96474,
+        "DestinationId": 60987,
+        "DepartureDate": "2020-06-05T00:00:00"
+      },
+      "QuoteDateTime": "2020-04-08T09:54:00"
+    }
+  ],
+  "Places": [
+    {
+      "PlaceId": 60987,
+      "IataCode": "JFK",
+      "Name": "New York John F. Kennedy",
+      "Type": "Station",
+      "SkyscannerCode": "JFK",
+      "CityName": "New York",
+      "CityId": "NYCA",
+      "CountryName": "United States"
+    },
+    {
+      "PlaceId": 96474,
+      "IataCode": "YYZ",
+      "Name": "Toronto Pearson International",
+      "Type": "Station",
+      "SkyscannerCode": "YYZ",
+      "CityName": "Toronto",
+      "CityId": "YTOA",
+      "CountryName": "Canada"
+    }
+  ],
+  "Carriers": [
+    {
+      "CarrierId": 838,
+      "Name": "Air France"
+    },
+    {
+      "CarrierId": 954,
+      "Name": "China Southern"
+    },
+    {
+      "CarrierId": 1317,
+      "Name": "Korean Air"
+    },
+    {
+      "CarrierId": 1329,
+      "Name": "Kenya Airways"
+    },
+    {
+      "CarrierId": 1361,
+      "Name": "LATAM Airlines Group"
+    },
+    {
+      "CarrierId": 1907,
+      "Name": "WestJet"
+    }
+  ],
+  "Currencies": [
+    {
+      "Code": "USD",
+      "Symbol": "$",
+      "ThousandsSeparator": ",",
+      "DecimalSeparator": ".",
+      "SymbolOnLeft": true,
+      "SpaceBetweenAmountAndSymbol": false,
+      "RoundingCoefficient": 0,
+      "DecimalDigits": 2
+    }
+  ]
+}
+
+
+# In[7]:
 
 
 print('Hello, how can I help you?')
@@ -129,17 +274,10 @@ while True:
         
             else:
                 print('Great, here are some options:')
-                #Use information above to search sky scanner
                 
-                #Convert Dates, Location (airport codes) for usage in Flight lookup
+                output = rp.flight_options(Locations_list, Dates_list, Money_list,test)
                 
-                #Location check/narrower
-        
-                #Find match score for locations
-                
-                
-                for v in Locations_list:
-                    print(ner.match_score_list(v))
+                print(output)
                 
                 break
         
@@ -149,7 +287,7 @@ while True:
         break
 
 
-# In[7]:
+# In[8]:
 
 
 # If no second loaction, ask for start location
@@ -172,38 +310,8 @@ while True:
 # Integration with Slack
 
 
-# In[8]:
-
-
-#bot.export_for_training('my_export.json')
-
-
 # In[9]:
 
 
-import requests
-
-L1 = 'YYZ'
-L2 = 'JFK'
-D1 = '2020-06-01'
-D2 = '2020-07-01'
-
-url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browseroutes/v1.0/US/USD/en-US/" + L1 + "-sky/" +  L2 + "-sky/" + D1
-
-querystring = {"inboundpartialdate":D2}
-
-headers = {
-    'x-rapidapi-host': "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
-    'x-rapidapi-key': "e9ea65cb6bmsh7a9294203a09dfep163c42jsn05f9e4a2cceb"
-    }
-
-response = requests.request("GET", url, headers=headers, params=querystring)
-
-print(response.text)
-
-
-# In[ ]:
-
-
-
+#bot.export_for_training('my_export.json')
 
