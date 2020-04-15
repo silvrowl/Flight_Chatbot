@@ -209,12 +209,17 @@ def bot_response(p1):
             else:
 
                 if len(p1.Locations_list)<2:
-                    p1.response = 'Where do you want to travel from?'
+                    
+                    if len(p1.Locations_list)==0:
+                        p1.response = 'Where do you want to travel from?'
+                        
+                    else:
+                        p1.response = 'Where do you want to go to?'
                     #return p1
 
-                elif len(p1.Dates_list)<2 and one_way == False:
+                elif len(p1.Dates_list)<2 and p1.one_way == False:
 
-                    if cnt_return == 0:
+                    if p1.cnt_return == 0:
                         p1.response = 'When do you want to return?'
                         #return p1
                     else:

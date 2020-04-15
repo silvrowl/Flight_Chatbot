@@ -39,6 +39,8 @@ def message(payload):
     event = payload.get("event", {})
     channel_id = event.get("channel")
     user_id = event.get("user")
+    
+    print(user_id)
    
     if user_id != 'U011H6XDGM8':
         
@@ -55,11 +57,13 @@ def message(payload):
         
         cust_output = str(p1.response)
         
-        response = slack_web_client.chat_postMessage(channel=channel_id,text=cust_output)
+        slack_web_client.chat_postMessage(channel=channel_id,text=cust_output)
     
         with open('./pkl_files/p1.pkl', 'wb') as output:
             #p1 = cust_input(0,0,0,False,False,'',[],[],[],'')   
             pickle.dump(p1, output, pickle.HIGHEST_PROTOCOL)
+    else:
+        return False
 
 
 if __name__ == "__main__":

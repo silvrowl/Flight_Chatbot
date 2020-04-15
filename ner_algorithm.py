@@ -321,7 +321,7 @@ def word_tagger(words):
 
 def match_score(tagged_word):
     
-    airports = pd.read_csv('all_airports_clean.csv')
+    airports = pd.read_csv('./pkl_files/all_airports_clean.csv')
     
     user_input = tagged_word
     

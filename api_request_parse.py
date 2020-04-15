@@ -215,44 +215,51 @@ def flight_options(Locations_list, Dates_list, Money_list,test):
         
         for en in code_to_list:
             
-            if cnt1>3:
-                break
-
-            L1 = st
-            L2 = en
-            D1 = date_format[0]
-            D2 = date_format[1]
-
-            url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browseroutes/v1.0/US/USD/en-US/" + L1 + "-sky/" +  L2 + "-sky/" + D1
-            #querystring = {"inboundpartialdate":D2}
-
-            headers = { 'x-rapidapi-host': "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
-                'x-rapidapi-key': "e9ea65cb6bmsh7a9294203a09dfep163c42jsn05f9e4a2cceb"}
-
-            #response_out = requests.request("GET", url, headers=headers)
-            response_in = test
-
-            #results = response_to_text(response_in.json())
-            results_1 = response_to_text(response_in)
-            r1_budget = results_1[results_1['MinPrice']<int(Money_list[0])]
-
-            for flight in np.arange(0,len(r1_budget)):
-
-                price = r1_budget['MinPrice'][flight] 
-                carr = r1_budget['CarrierIds'][flight] 
-                depart = r1_budget['OriginId'][flight]
-                arrive = r1_budget['DestinationId'][flight] 
-                time = r1_budget['DepartureDate'][flight] 
-
-                output_in = depart + ' to ' + arrive + ' for ' + str(price) + '$ on ' +  carr  + ' at ' + time + '\n'
-                output = output + output_in
-
-                cnt1 = cnt1 + 1
-                
+            try:
+            
                 if cnt1>3:
                     break
+
+                L1 = st
+                L2 = en
+                D1 = date_format[0]
+                D2 = date_format[1]
+
+                url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browseroutes/v1.0/US/USD/en-US/" + L1 + "-sky/" +  L2 + "-sky/" + D1
+                #querystring = {"inboundpartialdate":D2}
+
+                headers = { 'x-rapidapi-host': "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
+                    'x-rapidapi-key': "e9ea65cb6bmsh7a9294203a09dfep163c42jsn05f9e4a2cceb"}
+
+                response_in = requests.request("GET", url, headers=headers)
                 
-            
+                print(response_in.json())
+                
+                results_1 = response_to_text(response_in.json())
+
+                #response_in = test
+                #results_1 = response_to_text(response_in)
+
+                r1_budget = results_1[results_1['MinPrice']<int(Money_list[0])]
+
+                for flight in np.arange(0,len(r1_budget)-1):
+
+                    price = r1_budget['MinPrice'][flight] 
+                    carr = r1_budget['CarrierIds'][flight] 
+                    depart = r1_budget['OriginId'][flight]
+                    arrive = r1_budget['DestinationId'][flight] 
+                    time = r1_budget['DepartureDate'][flight] 
+
+                    output_in = depart + ' to ' + arrive + ' for ' + str(price) + '$ on ' +  carr  + ' at ' + time + '\n'
+                    output = output + output_in
+
+                    cnt1 = cnt1 + 1
+
+                    if cnt1>3:
+                        break           
+                        
+            except:
+                output = output + st + ' to ' + en + ' flight not found \n'
 
     output = output + ' and here are some returning flights: \n'            
     
@@ -265,43 +272,52 @@ def flight_options(Locations_list, Dates_list, Money_list,test):
         
         for en in code_to_list:
             
-            if cnt2>3:
-                break
-
-            L1 = st
-            L2 = en
-            D1 = date_format[0]
-            D2 = date_format[1]
-
-            url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browseroutes/v1.0/US/USD/en-US/" + L2 + "-sky/" +  L1 + "-sky/" + D2
-            #querystring = {"inboundpartialdate":D2}
-
-            headers = { 'x-rapidapi-host': "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
-                'x-rapidapi-key': "e9ea65cb6bmsh7a9294203a09dfep163c42jsn05f9e4a2cceb"}
-
-            #response_in = requests.request("GET", url, headers=headers)
-            response_out = test
-
-            #results = response_to_text(response_in.json())
-            results_2 = response_to_text(response_out)
-            r2_budget = results_2[results_2['MinPrice']<int(Money_list[0])]
-
-            for flight in np.arange(0,len(r2_budget)):
-
-                price = r2_budget['MinPrice'][flight] 
-                carr = r2_budget['CarrierIds'][flight] 
-                depart = r2_budget['OriginId'][flight]
-                arrive = r2_budget['DestinationId'][flight] 
-                time = r2_budget['DepartureDate'][flight] 
-
-                output_in = depart + ' to ' + arrive + ' for ' + str(price) + '$ on ' +  carr  + ' at ' + time + '\n'
-                output = output + output_in
-
-                cnt2 = cnt2 + 1
-
+            try:
+            
                 if cnt2>3:
                     break
 
+                L1 = st
+                L2 = en
+                D1 = date_format[0]
+                D2 = date_format[1]
+
+                url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browseroutes/v1.0/US/USD/en-US/" + L2 + "-sky/" +  L1 + "-sky/" + D2
+                #querystring = {"inboundpartialdate":D2}
+
+                headers = { 'x-rapidapi-host': "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
+                    'x-rapidapi-key': "e9ea65cb6bmsh7a9294203a09dfep163c42jsn05f9e4a2cceb"}
+
+                response_out = requests.request("GET", url, headers=headers)
+                
+                print(response_out.json())
+                
+                results_2 = response_to_text(response_out.json())
+
+                #response_out = test
+                #results_2 = response_to_text(response_out)
+
+                r2_budget = results_2[results_2['MinPrice']<int(Money_list[0])]
+
+                for flight in np.arange(0,len(r2_budget)-1):
+
+                    price = r2_budget['MinPrice'][flight] 
+                    carr = r2_budget['CarrierIds'][flight] 
+                    depart = r2_budget['OriginId'][flight]
+                    arrive = r2_budget['DestinationId'][flight] 
+                    time = r2_budget['DepartureDate'][flight] 
+
+                    output_in = depart + ' to ' + arrive + ' for ' + str(price) + '$ on ' +  carr  + ' at ' + time + '\n'
+                    output = output + output_in
+
+                    cnt2 = cnt2 + 1
+
+                    if cnt2>3:
+                        break
+                        
+            except:
+                output = output + st + ' to ' + en + ' flight not found \n'
+                
     return output
         
         
