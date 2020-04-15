@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
-
 #%pip install chatterbot-corpus -qq
 from chatterbot import ChatBot
 from chatterbot.trainers import ListTrainer
@@ -18,13 +15,18 @@ bot = ChatBot(
     database_uri='sqlite:///database.sqlite3'
 )
 
-with open('custom_list.pkl', 'rb') as f:
+with open('./pkl_files/custom_list.pkl', 'rb') as f:
     custom_list = pickle.load(f)
 
 custom_list_2 = []    
     
 for s in custom_list:
     custom_list_2.append(s[0])
+    
+#Bring in Frames's conversations...
+#with open('frames_list.pkl', 'rb') as f:
+#    frames_list = pickle.load(f)    
+    
     
 trainer = ListTrainer(bot)
 trainer.train(custom_list_2)
@@ -167,18 +169,6 @@ test = {
     }
   ]
 }
-
-
-# In[3]:
-
-
-#Bring in George's conversations...
-#with open('frames_list.pkl', 'rb') as f:
-#    frames_list = pickle.load(f)
-
-
-# In[7]:
-
 
 def bot_response(p1):
 

@@ -3,9 +3,6 @@
 
 # # Script to do Named Entity Recognition for the purposes of a travel chat bot
 
-# In[110]:
-
-
 #All Imports
 import nltk, nltk.tag, nltk.chunk
 import spacy
@@ -38,11 +35,7 @@ nltk.download('punkt')
 
 
 # # Build My own NLP
-
 # ## Create Training Data
-
-# In[111]:
-
 
 Sample_Text_1 = [['Hi there'],
                ['How can I help you?'],
@@ -91,6 +84,8 @@ Sample_Text_5 = [['Hello'],
 
 Complete_Sample = Sample_Text_1 + Sample_Text_2 + Sample_Text_3 + Sample_Text_4 + Sample_Text_5
 
+#Save custom built training data for training the bot later
+
 with open('custom_list.pkl', 'wb') as f:
     pickle.dump(Complete_Sample, f)
 
@@ -100,9 +95,6 @@ Complete_Sample = Sample_Text_2
 # ## Data Cleaning
 # - Replace written numbers with values
 # - Replace ASAP with today
-
-# In[112]:
-
 
 # Functions for turning text numbers into digits
 
@@ -209,9 +201,6 @@ def text2int (textnum, numwords={}):
     return curstring
 
 
-# In[113]:
-
-
 #Function for cleaning data using above function
 def data_cleaning(sentence_list):
 
@@ -229,9 +218,6 @@ def data_cleaning(sentence_list):
 
 # ## Tokenizer
 
-# In[114]:
-
-
 #Function for tokenizing the chat
 
 def data_token(sentence_list):
@@ -247,10 +233,6 @@ def data_token(sentence_list):
         token_word.append(word_tokenize(str(word[0])))
 
     return token_word
-
-
-# In[115]:
-
 
 #Function for filtering stopwords and punctuation from tokenized words and lowercasing them
 
@@ -275,9 +257,6 @@ def filter_stopwords(token_word):
 
 
 # ## Post Tokenizaton Data Cleaning Massaging
-
-# In[116]:
-
 
 #Function for data cleaning post tokenization, replace suffixs, and some words.
 
@@ -311,9 +290,6 @@ def post_token_clean(filtered_sent):
 
 # ## Tagger
 
-# In[117]:
-
-
 # Function for tagging words using unigram and bigram taggers, based off brown corpus
 
 def word_tagger(words):
@@ -341,8 +317,7 @@ def word_tagger(words):
 
 # ## Locations NER
 
-# In[118]:
-
+# Function to fuzzy match city and state locations
 
 def match_score(tagged_word):
     
@@ -379,15 +354,10 @@ def match_score(tagged_word):
     
     if match_df['state_score'].max() > 80:
         return True
-    
-
-
-# In[119]:
-
 
 def match_score_list(tagged_word):
     
-    airports = pd.read_csv('all_airports_clean.csv')
+    airports = pd.read_csv('./pkl_files/all_airports_clean.csv')
     
     user_input = tagged_word
     
@@ -438,9 +408,6 @@ def match_score_list(tagged_word):
             return 'no options found'
 
 
-# In[120]:
-
-
 #Fucnction to compare words to gazetters word list to find locations
 
 #If fuzzy matches > 90 on place or state, tag as location
@@ -472,10 +439,6 @@ def location_ner(words_tagged):
 
 
 # ## Time and Dates and Money NER
-# 
-
-# In[121]:
-
 
 #Function to find possible dates and timing and tag them as such
 
@@ -540,10 +503,6 @@ def dates_ner(words_tagged):
 
 
 # ## Money NER
-
-# In[122]:
-
-
 # Function to find remaining numbers and say that they are numerical phrases
 
 def money_ner(words_tagged):
@@ -557,10 +516,6 @@ def money_ner(words_tagged):
 
 
 # ## Date Formatter
-
-# In[123]:
-
-
 #Function to parse dates found during ner
 
 def date_formatter(Dates):
@@ -607,10 +562,6 @@ def date_formatter_2(Dates):
 
 
 # ## NER Output
-
-# In[124]:
-
-
 #Function to place the tagged words into a dictionary
 
 def ner_output(final_tags):
@@ -635,10 +586,6 @@ def ner_output(final_tags):
 
 
 # ## Main
-
-# In[125]:
-
-
 # Run the above functions, seperated into preprocessing and tagging/parsing functions
 
 def word_preproc(raw_chat):
@@ -663,7 +610,6 @@ def word_ner_all(words_preproc):
 
 travel_chat_preproc = word_preproc(Sample_Text_1)
 travel_ner_out = word_ner_all(travel_chat_preproc)
-
 travel_ner_out 
 
 

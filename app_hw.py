@@ -29,7 +29,7 @@ class cust_input(object):
         self.Money_list = Money_list
         self.response = response
         
-with open('p1.pkl', 'wb') as output:
+with open('./pkl_files/p1.pkl', 'wb') as output:
     p1 = cust_input(0,0,0,False,False,'',[],[],[],'')   
     pickle.dump(p1, output, pickle.HIGHEST_PROTOCOL)
 
@@ -43,7 +43,7 @@ def message(payload):
    
     if user_id != 'U011H6XDGM8':
         
-        with open('p1.pkl', 'rb') as input:
+        with open('./pkl_files/p1.pkl', 'rb') as input:
             p1 = pickle.load(input)
         
         p1.text = event.get("text")
@@ -58,14 +58,9 @@ def message(payload):
         
         response = slack_web_client.chat_postMessage(channel=channel_id,text=cust_output)
     
-        with open('p1.pkl', 'wb') as output:
+        with open('./pkl_files/p1.pkl', 'wb') as output:
             #p1 = cust_input(0,0,0,False,False,'',[],[],[],'')   
             pickle.dump(p1, output, pickle.HIGHEST_PROTOCOL)
-        
-    
-    #return p1
-    #assert response["ok"]
-    #assert response["message"]["text"] == "Hello world!"
 
 
 if __name__ == "__main__":

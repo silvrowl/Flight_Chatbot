@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[5]:
-
-
 import pandas as pd
 import requests
 import json
@@ -14,6 +11,8 @@ import NER_Attempt_02 as ner
 
 true = True
 false = False
+
+#Example Sky Scanner Request
 
 test = {
   "Routes": [],
@@ -151,9 +150,7 @@ test = {
   ]
 }
 
-
-# In[6]:
-
+#Function to pull quotes from skyscanner json pull
 
 def response_to_text(test):
 
@@ -188,13 +185,11 @@ def response_to_text(test):
         return quotes5_df
         
 
-
-# In[8]:
-
-
 Locations_list = ['toronto', 'san diego']
 Dates_list = [datetime.datetime(2020, 6, 10, 0, 0), datetime.datetime(2020, 6, 3, 0, 0)]
 Money_list = ['81']
+
+# Function to output the results of the flight search
 
 def flight_options(Locations_list, Dates_list, Money_list,test):
     print(Locations_list, Dates_list, Money_list)
@@ -313,10 +308,6 @@ def flight_options(Locations_list, Dates_list, Money_list,test):
 #test_response = flight_options(Locations_list, Dates_list, Money_list,test)
 
 #print(test_response)
-
-
-# In[ ]:
-
 
 #Other possible repsonse from API
 
