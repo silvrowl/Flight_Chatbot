@@ -26,23 +26,26 @@ pip3 install -r requirements.txt
 ### NER_Attempt_02.py
 - Named Entity Recognition Model used to parse the user's response
 
-## Summary of Additional Files
+## Summary of Additional Folders and Files
+
+### database.sqlite3
+- Chatbot traning database
  
-### chatbot_env
+### /chatbot_env
 - environment for files
 
-### data_ingestion
+### /data_ingestion
 - scripts for organizing airport names and code data
 
-### frames
+### /frames
 - frames conversational data
 
-### notebooks
+### /notebooks
 - notebooks used to create app scripts
 
-### pkl_files
+### /pkl_files
 - assorted pkl files
 
-### Reference
+### /Reference
 - reference materials
 
