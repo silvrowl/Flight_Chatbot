@@ -6,7 +6,6 @@ from slackeventsapi import SlackEventAdapter
 import ssl as ssl_lib
 import certifi
 import pickle
-#from onboarding_tutorial import OnboardingTutorial
 import chat_bot_response as cbr
 
 # Initialize a Flask app to host the events adapter

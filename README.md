@@ -14,16 +14,16 @@ pip3 install -r requirements.txt
 
 ## Summary of Scripts
 
-### app_hw.py
+### app.py
 - Slack bot wrapper, uses functions in chat_bot_response.py to determine response 
 
 ### chat_bot_response.py
 - Chat bot logic engine, used to determine what to ask the user
 
-### Response_parsing.py
+### api_request_parse.py
 - API requester and parser using RapidAPI
 
-### NER_Attempt_02.py
+### ner_algorithm.py
 - Named Entity Recognition Model used to parse the user's response
 
 ## Summary of Additional Folders and Files

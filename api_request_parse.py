@@ -7,7 +7,7 @@ import json
 import datetime
 from pandas.io.json import json_normalize
 import numpy as np
-import NER_Attempt_02 as ner
+import ner_algorithm as ner
 
 true = True
 false = False

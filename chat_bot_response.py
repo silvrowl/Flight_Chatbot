@@ -4,10 +4,10 @@
 #%pip install chatterbot-corpus -qq
 from chatterbot import ChatBot
 from chatterbot.trainers import ListTrainer
-import NER_Attempt_02 as ner
+import ner_algorithm as ner
 import pickle
 import pandas as pd
-import Response_Parsing as rp
+import api_request_parse as rp
 
 bot = ChatBot(
     'TravelJohnny',
