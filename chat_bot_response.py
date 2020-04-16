@@ -17,158 +17,19 @@ bot = ChatBot(
 
 with open('./pkl_files/custom_list.pkl', 'rb') as f:
     custom_list = pickle.load(f)
-
 custom_list_2 = []    
-    
+
 for s in custom_list:
     custom_list_2.append(s[0])
     
 #Bring in Frames's conversations...
-#with open('frames_list.pkl', 'rb') as f:
-#    frames_list = pickle.load(f)    
+with open('./pkl_files/frames_list.pkl', 'rb') as f:
+    frames_list = pickle.load(f)    
     
     
-trainer = ListTrainer(bot)
-trainer.train(custom_list_2)
-
-true = True
-false = False
-
-test = {
-  "Routes": [],
-  "Quotes": [
-    {
-      "QuoteId": 1,
-      "MinPrice": 80,
-      "Direct": true,
-      "OutboundLeg": {
-        "CarrierIds": [
-          1329
-        ],
-        "OriginId": 96474,
-        "DestinationId": 60987,
-        "DepartureDate": "2020-06-01T00:00:00"
-      },
-      "QuoteDateTime": "2020-04-08T09:32:00"
-    },
-    {
-      "QuoteId": 2,
-      "MinPrice": 78,
-      "Direct": true,
-      "OutboundLeg": {
-        "CarrierIds": [
-          838
-        ],
-        "OriginId": 96474,
-        "DestinationId": 60987,
-        "DepartureDate": "2020-06-02T00:00:00"
-      },
-      "QuoteDateTime": "2020-04-07T11:33:00"
-    },
-    {
-      "QuoteId": 3,
-      "MinPrice": 80,
-      "Direct": true,
-      "OutboundLeg": {
-        "CarrierIds": [
-          954
-        ],
-        "OriginId": 96474,
-        "DestinationId": 60987,
-        "DepartureDate": "2020-06-03T00:00:00"
-      },
-      "QuoteDateTime": "2020-04-08T09:42:00"
-    },
-    {
-      "QuoteId": 4,
-      "MinPrice": 80,
-      "Direct": true,
-      "OutboundLeg": {
-        "CarrierIds": [
-          954
-        ],
-        "OriginId": 96474,
-        "DestinationId": 60987,
-        "DepartureDate": "2020-06-04T00:00:00"
-      },
-      "QuoteDateTime": "2020-04-08T09:48:00"
-    },
-    {
-      "QuoteId": 5,
-      "MinPrice": 80,
-      "Direct": true,
-      "OutboundLeg": {
-        "CarrierIds": [
-          1361
-        ],
-        "OriginId": 96474,
-        "DestinationId": 60987,
-        "DepartureDate": "2020-06-05T00:00:00"
-      },
-      "QuoteDateTime": "2020-04-08T09:54:00"
-    }
-  ],
-  "Places": [
-    {
-      "PlaceId": 60987,
-      "IataCode": "JFK",
-      "Name": "New York John F. Kennedy",
-      "Type": "Station",
-      "SkyscannerCode": "JFK",
-      "CityName": "New York",
-      "CityId": "NYCA",
-      "CountryName": "United States"
-    },
-    {
-      "PlaceId": 96474,
-      "IataCode": "YYZ",
-      "Name": "Toronto Pearson International",
-      "Type": "Station",
-      "SkyscannerCode": "YYZ",
-      "CityName": "Toronto",
-      "CityId": "YTOA",
-      "CountryName": "Canada"
-    }
-  ],
-  "Carriers": [
-    {
-      "CarrierId": 838,
-      "Name": "Air France"
-    },
-    {
-      "CarrierId": 954,
-      "Name": "China Southern"
-    },
-    {
-      "CarrierId": 1317,
-      "Name": "Korean Air"
-    },
-    {
-      "CarrierId": 1329,
-      "Name": "Kenya Airways"
-    },
-    {
-      "CarrierId": 1361,
-      "Name": "LATAM Airlines Group"
-    },
-    {
-      "CarrierId": 1907,
-      "Name": "WestJet"
-    }
-  ],
-  "Currencies": [
-    {
-      "Code": "USD",
-      "Symbol": "$",
-      "ThousandsSeparator": ",",
-      "DecimalSeparator": ".",
-      "SymbolOnLeft": true,
-      "SpaceBetweenAmountAndSymbol": false,
-      "RoundingCoefficient": 0,
-      "DecimalDigits": 2
-    }
-  ]
-}
+#trainer = ListTrainer(bot)
+#trainer.train(custom_list_2)
+#trainer.train(frames_list)
 
 def bot_response(p1):
 
@@ -218,15 +79,21 @@ def bot_response(p1):
                     #return p1
 
                 elif len(p1.Dates_list)<2 and p1.one_way == False:
-
-                    if p1.cnt_return == 0:
-                        p1.response = 'When do you want to return?'
-                        #return p1
+                    
+                    if len(p1.Dates_list) == 0:
+                        
+                        p1.response = 'When do you want to leave?'
+                        
                     else:
-                        p1.one_way = True
+
+                        if p1.cnt_return == 0:
+                            p1.response = 'When do you want to return?'
+                            #return p1
+                        else:
+                            p1.one_way = True
                         #continue
 
-                    p1.cnt_return = p1.cnt_return + 1
+                        p1.cnt_return = p1.cnt_return + 1
                     #return p1
 
                 elif len(p1.Money_list)<1 and p1.no_bud == False:
@@ -246,7 +113,7 @@ def bot_response(p1):
                 else:
                     #print('Great, here are some options:')
 
-                    output = rp.flight_options(p1.Locations_list, p1.Dates_list, p1.Money_list,test)
+                    output = rp.flight_options(p1.Locations_list, p1.Dates_list, p1.Money_list)
 
                     #print(output)
                     

@@ -9,147 +9,6 @@ from pandas.io.json import json_normalize
 import numpy as np
 import ner_algorithm as ner
 
-true = True
-false = False
-
-#Example Sky Scanner Request
-
-test = {
-  "Routes": [],
-  "Quotes": [
-    {
-      "QuoteId": 1,
-      "MinPrice": 80,
-      "Direct": true,
-      "OutboundLeg": {
-        "CarrierIds": [
-          1329
-        ],
-        "OriginId": 96474,
-        "DestinationId": 60987,
-        "DepartureDate": "2020-06-01T00:00:00"
-      },
-      "QuoteDateTime": "2020-04-08T09:32:00"
-    },
-    {
-      "QuoteId": 2,
-      "MinPrice": 78,
-      "Direct": true,
-      "OutboundLeg": {
-        "CarrierIds": [
-          838
-        ],
-        "OriginId": 96474,
-        "DestinationId": 60987,
-        "DepartureDate": "2020-06-02T00:00:00"
-      },
-      "QuoteDateTime": "2020-04-07T11:33:00"
-    },
-    {
-      "QuoteId": 3,
-      "MinPrice": 80,
-      "Direct": true,
-      "OutboundLeg": {
-        "CarrierIds": [
-          954
-        ],
-        "OriginId": 96474,
-        "DestinationId": 60987,
-        "DepartureDate": "2020-06-03T00:00:00"
-      },
-      "QuoteDateTime": "2020-04-08T09:42:00"
-    },
-    {
-      "QuoteId": 4,
-      "MinPrice": 80,
-      "Direct": true,
-      "OutboundLeg": {
-        "CarrierIds": [
-          954
-        ],
-        "OriginId": 96474,
-        "DestinationId": 60987,
-        "DepartureDate": "2020-06-04T00:00:00"
-      },
-      "QuoteDateTime": "2020-04-08T09:48:00"
-    },
-    {
-      "QuoteId": 5,
-      "MinPrice": 80,
-      "Direct": true,
-      "OutboundLeg": {
-        "CarrierIds": [
-          1361
-        ],
-        "OriginId": 96474,
-        "DestinationId": 60987,
-        "DepartureDate": "2020-06-05T00:00:00"
-      },
-      "QuoteDateTime": "2020-04-08T09:54:00"
-    }
-  ],
-  "Places": [
-    {
-      "PlaceId": 60987,
-      "IataCode": "JFK",
-      "Name": "New York John F. Kennedy",
-      "Type": "Station",
-      "SkyscannerCode": "JFK",
-      "CityName": "New York",
-      "CityId": "NYCA",
-      "CountryName": "United States"
-    },
-    {
-      "PlaceId": 96474,
-      "IataCode": "YYZ",
-      "Name": "Toronto Pearson International",
-      "Type": "Station",
-      "SkyscannerCode": "YYZ",
-      "CityName": "Toronto",
-      "CityId": "YTOA",
-      "CountryName": "Canada"
-    }
-  ],
-  "Carriers": [
-    {
-      "CarrierId": 838,
-      "Name": "Air France"
-    },
-    {
-      "CarrierId": 954,
-      "Name": "China Southern"
-    },
-    {
-      "CarrierId": 1317,
-      "Name": "Korean Air"
-    },
-    {
-      "CarrierId": 1329,
-      "Name": "Kenya Airways"
-    },
-    {
-      "CarrierId": 1361,
-      "Name": "LATAM Airlines Group"
-    },
-    {
-      "CarrierId": 1907,
-      "Name": "WestJet"
-    }
-  ],
-  "Currencies": [
-    {
-      "Code": "USD",
-      "Symbol": "$",
-      "ThousandsSeparator": ",",
-      "DecimalSeparator": ".",
-      "SymbolOnLeft": true,
-      "SpaceBetweenAmountAndSymbol": false,
-      "RoundingCoefficient": 0,
-      "DecimalDigits": 2
-    }
-  ]
-}
-
 #Function to pull quotes from skyscanner json pull
 
 def response_to_text(test):
@@ -184,14 +43,9 @@ def response_to_text(test):
         
         return quotes5_df
         
-
-Locations_list = ['toronto', 'san diego']
-Dates_list = [datetime.datetime(2020, 6, 10, 0, 0), datetime.datetime(2020, 6, 3, 0, 0)]
-Money_list = ['81']
-
 # Function to output the results of the flight search
 
-def flight_options(Locations_list, Dates_list, Money_list,test):
+def flight_options(Locations_list, Dates_list, Money_list):
     print(Locations_list, Dates_list, Money_list)
     
     code_from_list = ner.match_score_list(Locations_list[0])['code'].values
@@ -214,11 +68,10 @@ def flight_options(Locations_list, Dates_list, Money_list,test):
             break
         
         for en in code_to_list:
+            if cnt1>3:
+                break
             
             try:
-            
-                if cnt1>3:
-                    break
 
                 L1 = st
                 L2 = en
@@ -233,7 +86,7 @@ def flight_options(Locations_list, Dates_list, Money_list,test):
 
                 response_in = requests.request("GET", url, headers=headers)
                 
-                print(response_in.json())
+                #print(response_in.json())
                 
                 results_1 = response_to_text(response_in.json())
 
@@ -290,7 +143,7 @@ def flight_options(Locations_list, Dates_list, Money_list,test):
 
                 response_out = requests.request("GET", url, headers=headers)
                 
-                print(response_out.json())
+                #print(response_out.json())
                 
                 results_2 = response_to_text(response_out.json())
 

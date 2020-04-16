@@ -43,8 +43,7 @@ Sample_Text_1 = [['Hi there'],
                ['Yes, for which dates would you like?'],
                ['June 3rd to 10th'],
                ['How much would like to spend?'],
-               ['Under 500'],
-               ['Great, Here are some options:']]
+               ['Under 500']]
 
 
 Sample_Text_2 = [['Good Morning'],
@@ -53,8 +52,7 @@ Sample_Text_2 = [['Good Morning'],
                ['When would you like to come back'],
                ['In 5 weeks, but I am flexible on the day'],
                ['What is your budget'],
-               ['Less than fifteen hundred dollars'],
-               ['Great, Here are some options:']]
+               ['Less than fifteen hundred dollars']]
                
 Sample_Text_3 = [['Yo'],
                ['How can I help you?'],
@@ -62,15 +60,13 @@ Sample_Text_3 = [['Yo'],
                ['When would you like to travel'],
                ['March 1st to March 2nd'],
                ['What is your budget'],
-               ['The cheapest you can find'],
-               ['Great, Here are some options:']]
+               ['The cheapest you can find']]
 
-Sample_Text_4 = [['Guten Tag'],
+Sample_Text_4 = [['Hello'],
                ['How can I help you?'],
                ['I would like to fly to San Francisco on the 5th of December'],
                ['What is your budget'],
-               ['Price is no object, and I would like first class if possible'],
-               ['Great, Here are some options:']]
+               ['Price is no object, and I would like first class if possible']]
 
 Sample_Text_5 = [['Hello'],
                ['How can I help you?'],
@@ -78,8 +74,7 @@ Sample_Text_5 = [['Hello'],
                ['Where are you located'],
                ['Washington'],
                ['What is your budget'],
-               ['Between $400 and $500'],
-               ['Great, Here are some options:']]
+               ['Between $400 and $500']]
 
 
 Complete_Sample = Sample_Text_1 + Sample_Text_2 + Sample_Text_3 + Sample_Text_4 + Sample_Text_5
@@ -211,7 +206,7 @@ def data_cleaning(sentence_list):
         sentence_list[cnt][0] = sentence_list[cnt][0].replace('as soon as possible','today')
         sentence_list[cnt][0] = sentence_list[cnt][0].replace('asap','today')
         sentence_list[cnt][0] = sentence_list[cnt][0].replace('ASAP','today')
-        sentence_list[cnt][0] = sentence_list[cnt][0].replace('$','dollars ')
+        sentence_list[cnt][0] = sentence_list[cnt][0].replace('$',' dollars ')
     
     return sentence_list
 
@@ -506,7 +501,7 @@ def dates_ner(words_tagged):
 # Function to find remaining numbers and say that they are numerical phrases
 
 def money_ner(words_tagged):
-    grammar = 'NumPhrase: {<CD><CD|NNS|JJ>}'
+    grammar = 'NumPhrase: {<CD><CD|NNS|JJ> || <CD|NNS|JJ><CD> }'
     t_parser = nltk.RegexpParser(grammar)
 
     final_tree = t_parser.parse(words_tagged)
