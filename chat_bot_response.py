@@ -47,10 +47,29 @@ def bot_response(p1):
             travel_ner_out = ner.word_ner_all(travel_chat_preproc)   
 
             #See if we found any information
-            if len(travel_ner_out['Locations'])>0:
-                for a in travel_ner_out['Locations']:
-                    p1.Locations_list.append(a) 
+            len_A = len(travel_ner_out['Locations_A'])>0 
+            len_B = len(travel_ner_out['Locations_B'])>0
+            len_R = len(travel_ner_out['Locations_R'])>0
+            
+            if len_A:
+                for a in travel_ner_out['Locations_A']:
+                        p1.Locations_list.append(a) 
+                        p1.Locations_type.append('A')
+            
+            if len_B:
+                for b in travel_ner_out['Locations_B']:
+                        p1.Locations_list.append(b) 
+                        p1.Locations_type.append('B')        
+                    
+            if len_R:        
+                for r in travel_ner_out['Locations_R']:
+                        p1.Locations_list.append(r) 
 
+                        if 'B' in p1.Locations_type:
+                            p1.Locations_type.append('A')
+                        else:
+                            p1.Locations_type.append('B')
+                    
             if len(travel_ner_out['Dates'])>0:
                 for b in travel_ner_out['Dates']:
                     p1.Dates_list.append(b) 
@@ -72,10 +91,10 @@ def bot_response(p1):
                 if len(p1.Locations_list)<2:
                     
                     if len(p1.Locations_list)==0:
-                        p1.response = 'Where do you want to travel from?'
+                        p1.response = 'Where do you want to go to?'
                         
                     else:
-                        p1.response = 'Where do you want to go to?'
+                        p1.response = 'Where do you want to travel from?'
                     #return p1
 
                 elif len(p1.Dates_list)<2 and p1.one_way == False:
@@ -113,7 +132,7 @@ def bot_response(p1):
                 else:
                     #print('Great, here are some options:')
 
-                    output = rp.flight_options(p1.Locations_list, p1.Dates_list, p1.Money_list)
+                    output = rp.flight_options(p1.Locations_list, p1.Locations_type, p1.Dates_list, p1.Money_list)
 
                     #print(output)
                     

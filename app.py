@@ -20,7 +20,7 @@ slack_events_adapter = SlackEventAdapter(os.environ['SLACK_SIGNING_SECRET'], "/s
 slack_web_client = WebClient(token=os.environ['SLACK_BOT_TOKEN'])
 
 class cust_input(object):
-    def __init__(self, cnt, cnt_return, cnt_money, no_bud, one_way, text, Locations_list, Dates_list, Money_list, response):
+    def __init__(self, cnt, cnt_return, cnt_money, no_bud, one_way, text, Locations_list, Locations_type, Dates_list, Money_list, response):
         self.cnt = cnt
         self.cnt_return = cnt_return
         self.cnt_money = cnt_money
@@ -28,12 +28,13 @@ class cust_input(object):
         self.one_way = one_way
         self.text = text
         self.Locations_list = Locations_list
+        self.Locations_type = Locations_type
         self.Dates_list = Dates_list
         self.Money_list = Money_list
         self.response = response
         
 with open('./pkl_files/p1.pkl', 'wb') as output:
-    p1 = cust_input(0,0,0,False,False,'',[],[],[],'')   
+    p1 = cust_input(0,0,0,False,False,'',[],[],[],[],'')   
     pickle.dump(p1, output, pickle.HIGHEST_PROTOCOL)
 
 @slack_events_adapter.on("message")
@@ -73,7 +74,7 @@ def some_processing(payload):
         p1.text = event.get("text")
         
         if p1.text == 'restart':
-            p1 = cust_input(0,0,0,False,False,'',[],[],[],'')   
+            p1 = cust_input(0,0,0,False,False,'',[],[],[],[],'')   
 
         #print(p1)
         
@@ -87,7 +88,7 @@ def some_processing(payload):
             slack_web_client.chat_postMessage(channel=channel_id,text=cust_output)
     
         with open('./pkl_files/p1.pkl', 'wb') as output:
-            #p1 = cust_input(0,0,0,False,False,'',[],[],[],'')   
+            #p1 = cust_input(0,0,0,False,False,'',[],[],[],[],'')   
             pickle.dump(p1, output, pickle.HIGHEST_PROTOCOL)
         
     return 'message given'

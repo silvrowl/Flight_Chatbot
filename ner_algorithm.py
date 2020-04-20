@@ -417,21 +417,38 @@ def location_ner(words_tagged):
     for cnt in np.arange(0,len(words_tagged)):
         if match_score(words_tagged[cnt][0]):
             if words_tagged[cnt][1] == 'NN':
-                loc_tag[cnt] = (words_tagged[cnt][0],'LOCATION') 
+                #loc_tag[cnt] = (words_tagged[cnt][0],'LOCATION') 
+                
+                if cnt>0:
+                    if words_tagged[cnt-1][0] == 'from':
+                        loc_tag[cnt] = (words_tagged[cnt][0],'LOCATION_A') 
+                    else:
+                        loc_tag[cnt] = (words_tagged[cnt][0],'LOCATION_B') 
+                        
+                else:
+                    loc_tag[cnt] = (words_tagged[cnt][0],'LOCATION_R') 
+                
 
         if cnt < len(words_tagged)-1:       
             link_place = words_tagged[cnt][0] + ' ' + words_tagged[cnt+1][0]        
             if match_score(link_place):      
                 if words_tagged[cnt][1] in ['JJ','NN'] and words_tagged[cnt+1][1] == 'NN':
-                    loc_tag[cnt] = (link_place,'LOCATION') 
+                    
+                    #loc_tag[cnt] = (link_place,'LOCATION') 
+                    
+                    if cnt>0:
+                        if words_tagged[cnt-1][0] == 'from':
+                            loc_tag[cnt] = (link_place,'LOCATION_A') 
+                        else:
+                            loc_tag[cnt] = (link_place,'LOCATION_B') 
+
+                    else:
+                        loc_tag[cnt] = (link_place,'LOCATION_R') 
 
         cnt=cnt+1
         
     return loc_tag
-    
-    
-    return loc_tag
-
+ 
 
 # ## Time and Dates and Money NER
 
@@ -561,7 +578,9 @@ def date_formatter_2(Dates):
 
 def ner_output(final_tags):
 
-    Locations = [tag[0] for tag in final_tags if tag[1] == 'LOCATION']  
+    Locations_A = [tag[0] for tag in final_tags if tag[1] == 'LOCATION_A'] 
+    Locations_B = [tag[0] for tag in final_tags if tag[1] == 'LOCATION_B']  
+    Locations_R = [tag[0] for tag in final_tags if tag[1] == 'LOCATION_R']  
     
     Dates = [[tag[0]] for tag in final_tags if tag[1] == 'DATETIME']  
     Dates_Clean = date_formatter(Dates)
@@ -572,7 +591,9 @@ def ner_output(final_tags):
     Money = [tag[0] for tag in final_tags if tag[2] == 'B-NumPhrase']  
 
     ner_output = {
-      "Locations": Locations,
+      "Locations_A": Locations_A,
+      "Locations_B": Locations_B,
+      "Locations_R": Locations_R,  
       "Dates": Dates_Clean + Dates_Clean_2,
       "Money": Money
     }
