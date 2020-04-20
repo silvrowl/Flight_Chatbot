@@ -783,7 +783,6 @@ Cuernavaca,Mexico,CVJ
 Cape Vogel,Papua New Guinea,CVL
 Ciudad Victoria,Mexico,CVM
 Clovis,NEW MEXICO,CVN
-Albany,OR - Bus service,CVO
 Carnarvon,Australia,CVQ
 Corvo Island,Portugal,CVU
 Stevens Point/Wausau,WISCONSIN,CWA
@@ -2466,21 +2465,12 @@ Port Sudan,Sudan,PZU
 Bella Coola,British Columbia,QBC
 Vail,CO - Van service,QBF
 Copper Mountain,CO - Van service,QCE
-Dusseldorf,Germany - Rail service,QDU
 Selje,Norway,QFK
 Saarbruecken,Germany,QFZ
 Kolobrzeg,Poland,QJY
-Nantes,France - Rail service,QJZ
 Breckonridge,CO - Van service,QKB
-Cologne,Germany - Rail service,QKL
 Keystone,CO - Van service,QKS
-London-Paddington,United Kingdom - Rail service,QQP
 Queretaro,Mexico,QRO
-Fort Collins/Loveland,CO - Bus service,QWF
-Loveland/Fort Collins,CO - Bus service,QWF
-Denver,CO - Longmont Bus service,QWM
-Albany,OR - Bus service,QWY
-Angers,France - Rail service,QXG
 Cannes,France - Vieux Port,QYW
 Rabaul,Papua New Guinea,RAB
 Arar,Saudi Arabia,RAE
@@ -3153,118 +3143,39 @@ Whale Pass,ALASKA,WWP
 Newtok,ALASKA,WWT
 Wanxian,China,WXN
 West Yellowstone,MONTANA,WYS
-Churchill,MB - Rail service,XAD
 Herning,Denmark,XAK
 Chapeco,Brazil,XAP
-Capreol,ON - Rail service,XAW
-Montreal,QC - Dorval Rail service,XAX
-Campbellton,NB - Rail service,XAZ
 Bearskin Lake,Ontario,XBE
 Brockville,Ontario,XBR
 Christmas Island,Christmas Island,XCH
-Chambord,QC - Rail service,XCI
 Chatham,Ontario,XCM
-Lille,France - Rail service,XDB
-Gaspe,QC - Rail service,XDD
-Halifax,NS - Rail service,XDG
-Jasper,AB - Rail service,XDH
-Chandler,QC - Rail service,XDL
-Drummondville,QC - Rail service,XDM
-Moncton,NB - Rail service,XDP
-London,ON - Rail service,XDQ
-Ottawa,ON - Rail service,XDS
-Hervey,QC - Rail service,XDU
-Prince George,BC - Rail service,XDV
-Prince Rupert,BC - Rail service,XDW
-Sarnia,ON - Rail service,XDX
-Sudbury,ON - Rail service,XDY
-The Pas,MB - Rail service,XDZ
-Vancouver,BC - Rail service,XEA
-Windsor,ON - Rail service,XEC
-Lac Edouard,QC - Rail service,XEE
-Winnipeg,MB - Rail service,XEF
-Kingston,ON - Rail service,XEG
-Ladysmith,BC - Rail service,XEH
-Langford,BC - Rail service,XEJ
-Melville,SK - Rail service,XEK
-New Carlisle,QC - Rail service,XEL
-New Richmond,QC - Rail service,XEM
-Strasbourg,France - Bus service,XER
-Miramichi,NB - Rail service,XEY
-Fredericton Junction,NB - Rail service,XFC
-Parent,QC - Rail service,XFE
-Perce,QC - Rail service,XFG
-Senneterre,QC - Rail service,XFK
-Shawinigan,QC - Rail service,XFL
-Shawnigan,BC - Rail service,XFM
 Xiangfan,China,XFN
-Weymont,QC - Rail service,XFQ
-Alexandria,ON - Rail service,XFS
-Brantford,ON - Rail service,XFV
 Finkenwerder,Germany,XFW
-Quebec,QC - Sainte-Foy Rail service,XFY
-Cobourg,ON - Rail service,XGJ
-Coteau,QC - Rail service,XGK
 Kangiqsualujjuaq,Quebec,XGR
 Grimsby,Ontario,XGY
-Boulder,CO - Bus service,XHH
-Georgetown,ON - Rail service,XHM
-Chemainus,BC - Rail service,XHS
-Guelph,ON - Rail service,XIA
-Ingersoll,ON - Rail service,XIB
 Xichang,China,XIC
-Maxville,ON - Rail service,XID
-Napanee,ON - Rail service,XIF
-Prescott,ON - Rail service,XII
 Xilinhot,China,XIL
-Saint Hyacinthe,QC - Rail service,XIM
-St Marys,ON - Rail service,XIO
-Woodstock,ON - Rail service,XIP
 Xi An,China - Xianyang,XIY
-Joliette,QC - Rail service,XJL
-Jonquiere,QC - Rail service,XJQ
 Xieng Khouang,Laos,XKH
 Kasabonika,Ontario,XKS
-Sackville,NB - Rail service,XKV
 Lac Brochet,Manitoba,XLB
-Quebec,QC - Quebec Station Rail service,XLJ
-Quebec,QC - Levis Rail service,XLK
-Montreal,QC - St Lambert Rail service,XLM
-Toronto,ON - Guildwood Rail service,XLQ
-Niagara Falls,ON - Rail service,XLV
-Aldershot,ON - Rail service,XLY
-Truro,NS - Rail service,XLZ
 Manihi,French Polynesia,XMH
 Xiamen,China,XMN
 Macas,Ecuador,XMS
 Fayetteville,AR - Northwest Arkansas Regional,XNA
 Xining,China,XNN
-Poitiers,France - Rail service,XOP
-Parksville,BC - Rail service,XPB
 Pukatawagan,MB -,XPK
-Brampton,ON - Rail service,XPN
-Pointe-aux-Trembles,QC - Rail service,XPX
 Saint Tropez,France,XPZ
 Quepos,Costa Rica,XQP
 Qualicum,British Columbia,XQU
-Riviere-a-Pierre,QC - Rail service,XRP
 Jerez De La Frontere,Spain,XRY
 South Caicos,Turks and Caicos Islands,XSC
-Tours,France - Rail service,XSH
 South Indian Lake,Manitoba,XSI
 Singapore,Singapore - Seletar,XSP
 Tadoule Lake,Manitoba,XTL
-Strathroy,ON - Rail service,XTY
 Xuzhou,China,XUZ
 Valenciennes,France,XVS
-Belleville,ON - Rail service,XVV
-Watford,ON - Rail service,XWA
-Wyoming,ON - Rail service,XWY
 Yandina,Solomon Islands,XYA
-Lyon,France - Lyon Part-Dieu Rail service,XYD
-Casselman,ON - Rail service,XZB
-Glencoe,ON - Rail service,XZC
-Edmonton,AB - Rail service,XZL
 Anahim Lake,British Columbia,YAA
 Arctic Bay,Nunavut,YAB
 Cat Lake,Ontario,YAC
@@ -3291,7 +3202,6 @@ Opapamiska Lake,Ontario,YBS
 Brochet,Manitoba,YBT
 Berens River,Manitoba,YBV
 Blanc Sablon,Quebec,YBX
-Toronto,ON - Downtown Rail service,YBZ
 Courtenay,British Columbia,YCA
 Cambridge Bay,Nunavut,YCB
 Cornwall,Ontario,YCC
@@ -3321,7 +3231,6 @@ Snare Lake,Northwest Territories,YFJ
 Flin Flon,Manitoba,YFO
 Fort Simpson,Northwest Territories,YFS
 Fox Harbour/St Lewis,Newfoundland and Labrador,YFX
-Quebec,QC - Charny Rail service,YFZ
 Gillies Bay,British Columbia,YGB
 Fort Good Hope,Northwest Territories,YGH
 Yonago,Japan,YGJ
@@ -3378,7 +3287,6 @@ Moosonee,Ontario,YMO
 Montreal,QC - all airports,YMQ
 Chibougamau,Quebec,YMT
 Montreal,QC - Mirabel,YMX
-Montreal,QC - Downtown Rail service,YMY
 Natashquan,Quebec,YNA
 Yanbu,Saudi Arabia,YNB
 Wemindji,Quebec,YNC
@@ -3523,11 +3431,8 @@ Zagreb,Croatia,ZAG
 Zahedan,Iran,ZAH
 Valdivia,Chile,ZAL
 Zamboanga,Philippines,ZAM
-Nuremberg,Germany - Rail service,ZAQ
 Zhaotong,China,ZAT
-Antwerp,Belgium - Bus service,ZAY
 Zaragoza,Spain and Canary Islands,ZAZ
-Esbjerg,Denmark - Rail service,ZBB
 Bathhurst,New Brunswick,ZBF
 Fredericia,Denmark,ZBJ
 Odense,Denmark,ZBQ
@@ -3536,8 +3441,6 @@ Beaver Creek,CO - Van service,ZBV
 Sayaboury,Laos,ZBY
 Temuco,Chile,ZCO
 Basel/Mulhouse Railway Station,Switzerland,ZDH
-Berne,Switzerland - Rail service,ZDJ
-Brno,Czech Republic - Bus service,ZDN
 Senggo,Indonesia,ZEG
 Bella Bella,British Columbia,ZEL
 East Main,Quebec,ZEM
@@ -3550,7 +3453,6 @@ Gaua,Vanuatu,ZGU
 Zhanjiang,China,ZHA
 Houston,BC - Bus station,ZHO
 Halberstadt,Germany,ZHQ
-Aarhus,Denmark - Bus service,ZID
 Ixtapa,Mexico,ZIH
 Zihuatanejo/Ixtapa,Mexico,ZIH
 Swan River,Manitoba,ZJN
@@ -3581,8 +3483,6 @@ Churchill Falls,Newfoundland and Labrador,ZUM
 Miandrivazo,Madagascar,ZVA
 Savannakhet,Laos,ZVK
 Wollaston Lake,Saskatchewan,ZWL
-Stuttgart,Germany - Rail service,ZWS
 Rognan,Norway,ZXM
 Sylhet,Bangladesh,ZYL
-Brussels,Belgium - Rail service,ZYR
 Mzuzu,Malawi,ZZU
