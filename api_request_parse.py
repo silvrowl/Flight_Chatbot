@@ -66,17 +66,12 @@ def flight_options(Locations_list, Locations_type, Dates_list, Money_list):
     
     output = 'Here are some departing flights: \n' 
     
-    for st in code_from_list:
-        
-        if cnt1>3:
-            break
-        
+    r1_budget = pd.DataFrame(columns=['QuoteId','MinPrice','Direct','QuoteDateTime', 'CarrierIds', 'OriginId','DestinationId','DepartureDate'])
+    
+    for st in code_from_list:        
         for en in code_to_list:
-            if cnt1>3:
-                break
             
             try:
-
                 L1 = st
                 L2 = en
                 D1 = date_format[0]
@@ -92,55 +87,50 @@ def flight_options(Locations_list, Locations_type, Dates_list, Money_list):
 
                 #print(response_in.json())
                 results_1 = response_to_text(response_in.json())
-                
+                r1_budget_new = results_1[results_1['MinPrice']<int(Money_list[0])]
+                r1_budget = pd.concat([r1_budget,r1_budget_new])             
+                             
                 #response_in = test
-                #results_1 = response_to_text(response_in)
-
-                r1_budget = results_1[results_1['MinPrice']<int(Money_list[0])]
-
-                #Sort flights by closest to given date
-
-                r1_budget['DepartureDate'] = pd.to_datetime(r1_budget['DepartureDate'])
-                diff = r1_budget['DepartureDate'] - datetime.strptime(D1,'%Y-%m-%d')
-                r1_budget['time_delta'] = diff.abs()
-                r1_budget.sort_values(by='time_delta',ignore_index=True,inplace=True)
-
-                #print(r1_budget)
-
-                for flight in np.arange(0,len(r1_budget)-1):
-
-                    price = r1_budget['MinPrice'][flight] 
-                    carr = r1_budget['CarrierIds'][flight] 
-                    depart = r1_budget['OriginId'][flight]
-                    arrive = r1_budget['DestinationId'][flight] 
-                    time = r1_budget['DepartureDate'][flight]
-
-                    output_in = depart + ' to ' + arrive + ' for ' + str(price) + '$ on ' +  carr  + ' at ' + time.strftime("%Y-%m-%d") + '\n'
-                    output = output + output_in
-
-                    cnt1 = cnt1 + 1
-
-                    if cnt1>3:
-                        break           
+                #results_1 = response_to_text(response_in)     
 
             except:
-                output = output + st + ' to ' + en + ' flight not found \n'
+                print( st + ' to ' + en + ' flight not found \n' )
 
-    output = output + ' and here are some returning flights: \n'            
+                             
+    r1_budget['DepartureDate'] = pd.to_datetime(r1_budget['DepartureDate'])
+    diff = r1_budget['DepartureDate'] - datetime.strptime(D1,'%Y-%m-%d')
+    r1_budget['time_delta'] = diff.abs()
+    r1_budget.sort_values(by='time_delta',ignore_index=True,inplace=True)
+
+    #print(r1_budget)
+
+    for flight in np.arange(0,len(r1_budget)-1):
+
+        price = r1_budget['MinPrice'][flight] 
+        carr = r1_budget['CarrierIds'][flight] 
+        depart = r1_budget['OriginId'][flight]
+        arrive = r1_budget['DestinationId'][flight] 
+        time = r1_budget['DepartureDate'][flight]
+
+        output_in = depart + ' to ' + arrive + ' for ' + str(price) + '$ on ' +  carr  + ' on ' + time.strftime("%Y-%m-%d") + '\n'
+        output = output + output_in
+
+        cnt1 = cnt1 + 1
+
+        if cnt1>3:
+            break     
+                             
+                             
+    output = output + '\n And here are some returning flights: \n'            
+    
+    r2_budget = pd.DataFrame(columns=['QuoteId','MinPrice','Direct','QuoteDateTime', 'CarrierIds', 'OriginId','DestinationId','DepartureDate'])
     
     cnt2 = 0
     
-    for st in code_from_list:
-        
-        if cnt2>3:
-            break
-        
+    for st in code_from_list:        
         for en in code_to_list:
             
             try:
-            
-                if cnt2>3:
-                    break
 
                 L1 = st
                 L2 = en
@@ -158,37 +148,38 @@ def flight_options(Locations_list, Locations_type, Dates_list, Money_list):
                 #print(response_out.json())
                 
                 results_2 = response_to_text(response_out.json())
+                r2_budget_new = results_2[results_2['MinPrice']<int(Money_list[0])]
+                r2_budget = pd.concat([r2_budget,r2_budget_new])    
 
                 #response_out = test
                 #results_2 = response_to_text(response_out)
-
-                r2_budget = results_2[results_2['MinPrice']<int(Money_list[0])]
-                
-               
-                r2_budget['DepartureDate'] = pd.to_datetime(r2_budget['DepartureDate'])
-                diff = r1_budget['DepartureDate'] - datetime.strptime(D2,'%Y-%m-%d')
-                r2_budget['time_delta'] = diff.abs()
-                r2_budget.sort_values(by='time_delta',ignore_index=True,inplace=True)
-
-                for flight in np.arange(0,len(r2_budget)-1):
-
-                    price = r2_budget['MinPrice'][flight] 
-                    carr = r2_budget['CarrierIds'][flight] 
-                    depart = r2_budget['OriginId'][flight]
-                    arrive = r2_budget['DestinationId'][flight] 
-                    time = r2_budget['DepartureDate'][flight] 
-
-                    output_in = depart + ' to ' + arrive + ' for ' + str(price) + '$ on ' +  carr  + ' at ' + time.strftime("%Y-%m-%d") + '\n'
-                    output = output + output_in
-
-                    cnt2 = cnt2 + 1
-
-                    if cnt2>3:
-                        break
-                        
+     
             except:
-                output = output + st + ' to ' + en + ' flight not found \n'
-                
+                print( st + ' to ' + en + ' flight not found \n' )
+    
+    r2_budget['DepartureDate'] = pd.to_datetime(r2_budget['DepartureDate'])
+    diff = r2_budget['DepartureDate'] - datetime.strptime(D2,'%Y-%m-%d')
+    r2_budget['time_delta'] = diff.abs()
+    r2_budget.sort_values(by='time_delta',ignore_index=True,inplace=True)
+
+    for flight in np.arange(0,len(r2_budget)-1):
+
+        price = r2_budget['MinPrice'][flight] 
+        carr = r2_budget['CarrierIds'][flight] 
+        depart = r2_budget['OriginId'][flight]
+        arrive = r2_budget['DestinationId'][flight] 
+        time = r2_budget['DepartureDate'][flight] 
+
+        output_in = depart + ' to ' + arrive + ' for ' + str(price) + '$ on ' +  carr  + ' on ' + time.strftime("%Y-%m-%d") + '\n'
+        output = output + output_in
+
+        cnt2 = cnt2 + 1
+
+        if cnt2>3:
+            break
+                        
+    
+    
     return output
         
         
