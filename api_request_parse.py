@@ -87,7 +87,7 @@ def flight_options(Locations_list, Locations_type, Dates_list, Money_list):
 
                 #print(response_in.json())
                 results_1 = response_to_text(response_in.json())
-                r1_budget_new = results_1[results_1['MinPrice']<int(Money_list[0])]
+                r1_budget_new = results_1[results_1['MinPrice']<int(max(Money_list))]
                 r1_budget = pd.concat([r1_budget,r1_budget_new])             
                              
                 #response_in = test
@@ -148,7 +148,7 @@ def flight_options(Locations_list, Locations_type, Dates_list, Money_list):
                 #print(response_out.json())
                 
                 results_2 = response_to_text(response_out.json())
-                r2_budget_new = results_2[results_2['MinPrice']<int(Money_list[0])]
+                r2_budget_new = results_2[results_2['MinPrice']<int(max(Money_list))]
                 r2_budget = pd.concat([r2_budget,r2_budget_new])    
 
                 #response_out = test

@@ -27,8 +27,8 @@ with open('./pkl_files/frames_list.pkl', 'rb') as f:
     frames_list = pickle.load(f)    
     
     
-#trainer = ListTrainer(bot)
-#trainer.train(custom_list_2)
+trainer = ListTrainer(bot)
+trainer.train(custom_list_2)
 #trainer.train(frames_list)
 
 def bot_response(p1):
@@ -115,7 +115,7 @@ def bot_response(p1):
                         p1.cnt_return = p1.cnt_return + 1
                     #return p1
 
-                elif len(p1.Money_list)<1 and p1.no_bud == False:
+                elif len(p1.Money_list)<2 and p1.no_bud == False:
 
 
                     if p1.cnt_money == 0:

@@ -30,8 +30,8 @@ from nltk.chunk import ChunkParserI
 from nltk.chunk.util import conlltags2tree 
 from nltk.corpus import gazetteers 
 
-nltk.download('averaged_perceptron_tagger')
-nltk.download('punkt')
+#nltk.download('averaged_perceptron_tagger')
+#nltk.download('punkt')
 
 
 # # Build My own NLP
@@ -81,8 +81,8 @@ Complete_Sample = Sample_Text_1 + Sample_Text_2 + Sample_Text_3 + Sample_Text_4 
 
 #Save custom built training data for training the bot later
 
-with open('custom_list.pkl', 'wb') as f:
-    pickle.dump(Complete_Sample, f)
+#with open('custom_list.pkl', 'wb') as f:
+#    pickle.dump(Complete_Sample, f)
 
 Complete_Sample = Sample_Text_2
 
@@ -327,7 +327,7 @@ def match_score(tagged_word):
     code_list = []
 
     ### Fuzzy Matching
-    for t in np.arange(0,3587):
+    for t in np.arange(0,3487):
 
         city = airports.loc[t,'City']
         state = airports.loc[t,'State']
@@ -363,7 +363,7 @@ def match_score_list(tagged_word):
     code_list = []
 
     ### Fuzzy Matching
-    for t in np.arange(0,3587):
+    for t in np.arange(0,3487):
 
         city = airports.loc[t,'City']
         state = airports.loc[t,'State']
@@ -518,7 +518,7 @@ def dates_ner(words_tagged):
 # Function to find remaining numbers and say that they are numerical phrases
 
 def money_ner(words_tagged):
-    grammar = 'NumPhrase: {<CD><CD|NNS|JJ> || <CD|NNS|JJ><CD> }'
+    grammar = 'NumPhrase: {<CD|NNS><CD|NNS|JJ>}'
     t_parser = nltk.RegexpParser(grammar)
 
     final_tree = t_parser.parse(words_tagged)
@@ -578,6 +578,8 @@ def date_formatter_2(Dates):
 
 def ner_output(final_tags):
 
+    print(final_tags)
+    
     Locations_A = [tag[0] for tag in final_tags if tag[1] == 'LOCATION_A'] 
     Locations_B = [tag[0] for tag in final_tags if tag[1] == 'LOCATION_B']  
     Locations_R = [tag[0] for tag in final_tags if tag[1] == 'LOCATION_R']  
@@ -588,8 +590,25 @@ def ner_output(final_tags):
     Dates_2 = [[tag[0]] for tag in final_tags if tag[1] == 'DATETIME-DAY']  
     Dates_Clean_2 = date_formatter_2(Dates_2)
     
-    Money = [tag[0] for tag in final_tags if tag[2] == 'B-NumPhrase']  
-
+    try:
+        Money = [tag[0] for tag in final_tags if tag[2] == 'B-NumPhrase']  
+        int(Money[0])
+        
+    except:
+        try:
+            Money = [tag[0] for tag in final_tags if tag[2] == 'I-NumPhrase']  
+            int(Money[0])
+        except:
+            
+            try:
+                Money = [tag[0] for tag in final_tags if tag[2] == 'O']  
+                int(Money[0])
+            except:
+                Money = []
+                print('money not found')
+    
+    print(Money)
+    
     ner_output = {
       "Locations_A": Locations_A,
       "Locations_B": Locations_B,

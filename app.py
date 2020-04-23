@@ -34,7 +34,7 @@ class cust_input(object):
         self.response = response
         
 with open('./pkl_files/p1.pkl', 'wb') as output:
-    p1 = cust_input(0,0,0,False,False,'',[],[],[],[],'')   
+    p1 = cust_input(0,0,0,False,False,'',[],[],[],['500'],'')   
     pickle.dump(p1, output, pickle.HIGHEST_PROTOCOL)
 
 @slack_events_adapter.on("message")
@@ -74,7 +74,7 @@ def some_processing(payload):
         p1.text = event.get("text")
         
         if p1.text == 'restart':
-            p1 = cust_input(0,0,0,False,False,'',[],[],[],[],'')   
+            p1 = cust_input(0,0,0,False,False,'',[],[],[],['500'],'')   
 
         #print(p1)
         
@@ -90,6 +90,20 @@ def some_processing(payload):
         with open('./pkl_files/p1.pkl', 'wb') as output:
             #p1 = cust_input(0,0,0,False,False,'',[],[],[],[],'')   
             pickle.dump(p1, output, pickle.HIGHEST_PROTOCOL)
+            
+            
+        # Add input/output into custom list
+                
+        with open('./pkl_files/custom_list.pkl', 'rb') as f:
+            custom_list = pickle.load(f)
+        f.close()
+
+        custom_list.append([event.get("text")])
+        custom_list.append([cust_output])
+        
+        with open('./pkl_files/custom_list.pkl', 'wb') as f:
+                    pickle.dump(custom_list, f)
+        f.close()
         
     return 'message given'
 
