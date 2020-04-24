@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Script to do Named Entity Recognition for the purposes of a travel chat bot
+# Script to do Named Entity Recognition for the purposes of a travel chat bot
 
 #All Imports
 import nltk, nltk.tag, nltk.chunk
@@ -12,7 +12,6 @@ import re
 import datetime
 import string
 import pickle
-
 
 from datetime import date
 from dateutil import parser
@@ -32,7 +31,6 @@ from nltk.corpus import gazetteers
 
 #nltk.download('averaged_perceptron_tagger')
 #nltk.download('punkt')
-
 
 # # Build My own NLP
 # ## Create Training Data
@@ -86,7 +84,6 @@ Complete_Sample = Sample_Text_1 + Sample_Text_2 + Sample_Text_3 + Sample_Text_4 
 
 Complete_Sample = Sample_Text_2
 
-
 # ## Data Cleaning
 # - Replace written numbers with values
 # - Replace ASAP with today
@@ -94,15 +91,20 @@ Complete_Sample = Sample_Text_2
 # Functions for turning text numbers into digits
 
 def is_number(x):
+    
     if type(x) == str:
         x = x.replace(',', '')
+        
     try:
         float(x)
+        
     except:
         return False
+    
     return True
 
 def text2int (textnum, numwords={}):
+    
     units = [
         'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight',
         'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen',
@@ -130,8 +132,10 @@ def text2int (textnum, numwords={}):
     def is_numword(x):
         if is_number(x):
             return True
+        
         if word in numwords:
             return True
+        
         return False
 
     def from_numword(x):
@@ -139,18 +143,22 @@ def text2int (textnum, numwords={}):
             scale = 0
             increment = int(x.replace(',', ''))
             return scale, increment
+        
         return numwords[x]
 
     for word in textnum.split():
         if word in ordinal_words:
             scale, increment = (1, ordinal_words[word])
             current = current * scale + increment
+            
             if scale > 100:
                 result += current
                 current = 0
+                
             onnumber = True
             lastunit = False
             lastscale = False
+            
         else:
             for ending, replacement in ordinal_endings:
                 if word.endswith(ending):
@@ -160,34 +168,39 @@ def text2int (textnum, numwords={}):
                 if onnumber:
                     # Flush the current number we are building
                     curstring += repr(result + current) + " "
+                    
                 curstring += word + " "
                 result = current = 0
                 onnumber = False
                 lastunit = False
                 lastscale = False
+                
             else:
                 scale, increment = from_numword(word)
                 onnumber = True
 
-                if lastunit and (word not in scales):                                                                                                                                                                                                                                         
-                    # Assume this is part of a string of individual numbers to                                                                                                                                                                                                                
-                    # be flushed, such as a zipcode "one two three four five"                                                                                                                                                                                                                 
-                    curstring += repr(result + current)                                                                                                                                                                                                                                       
-                    result = current = 0                                                                                                                                                                                                                                                      
-
-                if scale > 1:                                                                                                                                                                                                                                                                 
-                    current = max(1, current)                                                                                                                                                                                                                                                 
-
-                current = current * scale + increment                                                                                                                                                                                                                                         
-                if scale > 100:                                                                                                                                                                                                                                                               
-                    result += current                                                                                                                                                                                                                                                         
-                    current = 0                                                                                                                                                                                                                                                               
-
-                lastscale = False                                                                                                                                                                                                              
-                lastunit = False                                                                                                                                                
-                if word in scales:                                                                                                                                                                                                             
-                    lastscale = True                                                                                                                                                                                                         
-                elif word in units:                                                                                                                                                                                                             
+                if lastunit and (word not in scales):  
+                    # Assume this is part of a string of individual numbers to                                                
+                    # be flushed, such as a zipcode "one two three four five"
+                    
+                    curstring += repr(result + current)                                                                         
+                    result = current = 0 
+                    
+                if scale > 1:  
+                    current = max(1, current)                                                                                  
+                    
+                current = current * scale + increment
+                
+                if scale > 100:                                                   
+                    result += current 
+                    current = 0                                                                                   
+                lastscale = False                                                                                       
+                lastunit = False         
+                
+                if word in scales:                                                                                             
+                    lastscale = True             
+                    
+                elif word in units:                                                                                             
                     lastunit = True
 
     if onnumber:
@@ -198,10 +211,11 @@ def text2int (textnum, numwords={}):
 
 #Function for cleaning data using above function
 def data_cleaning(sentence_list):
-
+    
     sentence_list = [[text2int(sent[0])] for sent in sentence_list]   
     
     cnt = 0
+    
     for cnt in np.arange(0,len(sentence_list)):
         sentence_list[cnt][0] = sentence_list[cnt][0].replace('as soon as possible','today')
         sentence_list[cnt][0] = sentence_list[cnt][0].replace('asap','today')
@@ -211,12 +225,11 @@ def data_cleaning(sentence_list):
     return sentence_list
 
 
-# ## Tokenizer
+## Tokenizer
 
 #Function for tokenizing the chat
-
 def data_token(sentence_list):
-        
+    
     token_sent = []
     
     for response in sentence_list:
@@ -230,8 +243,8 @@ def data_token(sentence_list):
     return token_word
 
 #Function for filtering stopwords and punctuation from tokenized words and lowercasing them
-
 def filter_stopwords(token_word):
+    
     stop_words = stopwords.words('english')
     no_punct = [] 
 
@@ -241,7 +254,6 @@ def filter_stopwords(token_word):
                 no_punct.append(ts)
 
     data_lower = [w.lower() for w in no_punct]
-
     filtered_sent=[]
 
     for w in data_lower:
@@ -251,12 +263,11 @@ def filter_stopwords(token_word):
     return filtered_sent
 
 
-# ## Post Tokenizaton Data Cleaning Massaging
-
+## Post Tokenizaton Data Cleaning Massaging
 #Function for data cleaning post tokenization, replace suffixs, and some words.
 
 def post_token_clean(filtered_sent):
-
+    
     today = date.today()
     tomorrow = date.today() + datetime.timedelta(days=1)
 
@@ -283,12 +294,11 @@ def post_token_clean(filtered_sent):
     return filtered_sent_2
 
 
-# ## Tagger
-
+## Tagger
 # Function for tagging words using unigram and bigram taggers, based off brown corpus
 
 def word_tagger(words):
-
+    
     brown_tagged_sents = brown.tagged_sents(categories='news')
     size = int(len(brown_tagged_sents) * 0.9)
 
@@ -304,20 +314,12 @@ def word_tagger(words):
     return words_tagged
 
 
-# ## Parsers
-# 
-# https://www.nltk.org/api/nltk.parse.html
-# 
-# Run specific parsers according to each type of information we want to extract?
-
-# ## Locations NER
-
+## Parsers
 # Function to fuzzy match city and state locations
 
 def match_score(tagged_word):
     
     airports = pd.read_csv('./pkl_files/all_airports_clean.csv')
-    
     user_input = tagged_word
     
     city_list = []
@@ -353,7 +355,6 @@ def match_score(tagged_word):
 def match_score_list(tagged_word):
     
     airports = pd.read_csv('./pkl_files/all_airports_clean.csv')
-    
     user_input = tagged_word
     
     city_list = []
@@ -389,9 +390,7 @@ def match_score_list(tagged_word):
         options_1 = match_sorted[match_sorted['city_score'] == match_sorted['city_score'].max()] 
         return options_1.head(5)
     
-
     elif match_sorted['city_score'].max() > 75 and match_sorted['city_score'].max() > state_sorted['state_score'].max():
-
         options_1 = match_sorted[match_sorted['city_score'] == match_sorted['city_score'].max()] 
         return options_1.head(5)
 
@@ -399,17 +398,15 @@ def match_score_list(tagged_word):
         if state_sorted['state_score'].max() > 75:
             options_2 = state_sorted[state_sorted['state_score'] == match_sorted['state_score'].max()] 
             return options_2.sample(5)
+        
         else:
             return 'no options found'
 
 
 #Fucnction to compare words to gazetters word list to find locations
-
 #If fuzzy matches > 90 on place or state, tag as location
 
 def location_ner(words_tagged):
-
-    #place_lower = [w.lower() for w in gazetteers.words()]
 
     loc_tag = words_tagged
         
@@ -417,11 +414,10 @@ def location_ner(words_tagged):
     for cnt in np.arange(0,len(words_tagged)):
         if match_score(words_tagged[cnt][0]):
             if words_tagged[cnt][1] == 'NN':
-                #loc_tag[cnt] = (words_tagged[cnt][0],'LOCATION') 
-                
                 if cnt>0:
                     if words_tagged[cnt-1][0] == 'from':
                         loc_tag[cnt] = (words_tagged[cnt][0],'LOCATION_A') 
+                        
                     else:
                         loc_tag[cnt] = (words_tagged[cnt][0],'LOCATION_B') 
                         
@@ -433,12 +429,10 @@ def location_ner(words_tagged):
             link_place = words_tagged[cnt][0] + ' ' + words_tagged[cnt+1][0]        
             if match_score(link_place):      
                 if words_tagged[cnt][1] in ['JJ','NN'] and words_tagged[cnt+1][1] == 'NN':
-                    
-                    #loc_tag[cnt] = (link_place,'LOCATION') 
-                    
                     if cnt>0:
                         if words_tagged[cnt-1][0] == 'from':
                             loc_tag[cnt] = (link_place,'LOCATION_A') 
+                            
                         else:
                             loc_tag[cnt] = (link_place,'LOCATION_B') 
 
@@ -451,7 +445,6 @@ def location_ner(words_tagged):
  
 
 # ## Time and Dates and Money NER
-
 #Function to find possible dates and timing and tag them as such
 
 def dates_ner(words_tagged):
@@ -468,7 +461,6 @@ def dates_ner(words_tagged):
     
     cnt=0
     for cnt in np.arange(0,len(words_tagged)):
-
         if '-' in words_tagged[cnt][0]:
                     time_tag[cnt] = (words_tagged[cnt][0],'DATETIME') 
 
@@ -479,19 +471,23 @@ def dates_ner(words_tagged):
                     date_p2 = words_tagged[cnt-1][0] 
                     int(date_p2)
                     time_tag[cnt] = (words_tagged[cnt][0] + ' ' + date_p2 ,'DATETIME')  
+                    
                 except:
                     cnt2=1    
+                    
                 try:
                     date_p1 = words_tagged[cnt+1][0]  
                     int(date_p1)
                     time_tag[cnt] = (words_tagged[cnt][0] + ' ' + date_p1,'DATETIME') 
+                    
                 except:
                     cnt2=1
                     
                 try:
                     date_p1 = words_tagged[cnt+2][0]  
                     int(date_p1)
-                    time_tag[cnt+2] = (words_tagged[cnt][0] + ' ' + date_p1,'DATETIME') 
+                    time_tag[cnt+2] = (words_tagged[cnt][0] + ' ' + date_p1,'DATETIME')
+                    
                 except:
                     cnt2=1
                     
@@ -500,8 +496,10 @@ def dates_ner(words_tagged):
                 
                 try:
                     date_p2 = words_tagged[cnt-1][0] 
+                    
                     if date_p2 == 'next':
                         time_tag[cnt] = (date_p2 + ' '  + words_tagged[cnt][0],'DATETIME-DAY')  
+                        
                     else:
                         time_tag[cnt] = (words_tagged[cnt][0],'DATETIME-DAY') 
                     
@@ -518,9 +516,9 @@ def dates_ner(words_tagged):
 # Function to find remaining numbers and say that they are numerical phrases
 
 def money_ner(words_tagged):
+    
     grammar = 'NumPhrase: {<CD|NNS><CD|NNS|JJ>}'
     t_parser = nltk.RegexpParser(grammar)
-
     final_tree = t_parser.parse(words_tagged)
     final_tags  = tree2conlltags(final_tree)
     
@@ -534,8 +532,8 @@ def date_formatter(Dates):
     
     date_clean = []
     cnt=0
+    
     for d in Dates:
-
         if 'day' in d[0]:
             tmp = d[0].split(' ')
             d_plus = int(tmp[1])
@@ -560,8 +558,8 @@ def date_formatter_2(Dates):
     
     date_clean = []
     cnt=0
+    
     for d in Dates:
-        #print(d)
         if 'next' in d[0]:
             d_plus = 7
             tmp = d[0].split(' ')
@@ -574,11 +572,12 @@ def date_formatter_2(Dates):
 
 
 # ## NER Output
+
 #Function to place the tagged words into a dictionary
 
 def ner_output(final_tags):
 
-    print(final_tags)
+    #print(final_tags)
     
     Locations_A = [tag[0] for tag in final_tags if tag[1] == 'LOCATION_A'] 
     Locations_B = [tag[0] for tag in final_tags if tag[1] == 'LOCATION_B']  
@@ -598,11 +597,12 @@ def ner_output(final_tags):
         try:
             Money = [tag[0] for tag in final_tags if tag[2] == 'I-NumPhrase']  
             int(Money[0])
-        except:
             
+        except:
             try:
                 Money = [tag[0] for tag in final_tags if tag[2] == 'O']  
                 int(Money[0])
+                
             except:
                 Money = []
                 print('money not found')
@@ -643,36 +643,6 @@ def word_ner_all(words_preproc):
     return ner_out
 
 
-travel_chat_preproc = word_preproc(Sample_Text_1)
-travel_ner_out = word_ner_all(travel_chat_preproc)
-travel_ner_out 
-
-
-# ## Next Steps...
-# 
-# ###  Logic Engine to parse NE
-
-# In[126]:
-
-
-# If no second loaction, ask for start location
-
-# If no second date, assume one way
-
-# If no money, assume cheapest
-
-# If no dates, ask for dates, if not look at today/oneway
-
-# If more than 3 locations -> Multicity
-
-# Chatterbot
-# https://chatterbot.readthedocs.io/en/stable/training.html
-
-# Start Presentation Tomorrow
-    # Intro
-    # Methodology / Challenges
-    # Tech Stack / Processs
-    # Demo of Tagging
-    # Results/Next Steps
-    
-
+#travel_chat_preproc = word_preproc(Sample_Text_1)
+#travel_ner_out = word_ner_all(travel_chat_preproc)
+#travel_ner_out 

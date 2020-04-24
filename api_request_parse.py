@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# Script to take information and use it to search SkyScanner API for flights
+
+#All Imports
 import pandas as pd
 import requests
 import json
@@ -11,61 +14,63 @@ import numpy as np
 import ner_algorithm as ner
 
 #Function to pull quotes from skyscanner json pull
-
 def response_to_text(test):
-
+        
+        #Parse and clean the api response
         quotes_df = pd.DataFrame.from_dict(test['Quotes'])
         labels_df = pd.json_normalize(quotes_df['OutboundLeg'])
         quotes2_df = pd.concat([quotes_df,labels_df],axis=1).drop(columns='OutboundLeg')
         quotes2_df['CarrierIds'] = quotes2_df['CarrierIds'].astype(str).str.replace('[','').str.replace(']','')
 
+        # Create dictionary for the carriers
         carrier_dict = test['Carriers']
         carrier_dict_2 = {} 
 
+        # Fill the dictionary
         for t in np.arange(0,len(carrier_dict)):
             a = carrier_dict[t]['CarrierId']
             b = carrier_dict[t]['Name']
             carrier_dict_2[str(a)]=b
 
+        # Sort quotes by minimum price
         quotes3_df = quotes2_df.replace({'CarrierIds': carrier_dict_2}).sort_values(by='MinPrice')
 
+        #Create dictionary for places
         places_dict = test['Places']
         places_dict_2 = {} 
 
+        # Fill the dictionary
         for t in np.arange(0,len(places_dict)):
             a = places_dict[t]['PlaceId']
             b = places_dict[t]['Name']
             places_dict_2[a]=b
 
-        places_dict_2
-
+        # Create dataframe for the quotes    
         quotes4_df = quotes3_df.replace({'OriginId': places_dict_2})
         quotes5_df = quotes4_df.replace({'DestinationId': places_dict_2})
         
         return quotes5_df
         
 # Function to output the results of the flight search
-
 def flight_options(Locations_list, Locations_type, Dates_list, Money_list):
-    
     
     print(Locations_list, Locations_type, Dates_list, Money_list)
     
+    #Get Airport Codes
     code_from_list = ner.match_score_list(Locations_list[Locations_type.index('A')])['code'].values
     code_to_list = ner.match_score_list(Locations_list[Locations_type.index('B')])['code'].values
-        
     
+    #Format the dates
     date_format = [d.strftime("%Y-%m-%d") for d in Dates_list]
-    
     date_format.sort()
     
     print(code_from_list)
     print(code_to_list)
     
     cnt1 = 0
-    
     output = 'Here are some departing flights: \n' 
     
+    #Initilize empty dataframe 
     r1_budget = pd.DataFrame(columns=['QuoteId','MinPrice','Direct','QuoteDateTime', 'CarrierIds', 'OriginId','DestinationId','DepartureDate'])
     
     for st in code_from_list:        
@@ -83,9 +88,10 @@ def flight_options(Locations_list, Locations_type, Dates_list, Money_list):
                 headers = { 'x-rapidapi-host': "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
                     'x-rapidapi-key': "e9ea65cb6bmsh7a9294203a09dfep163c42jsn05f9e4a2cceb"}
 
+                #Get the API response
                 response_in = requests.request("GET", url, headers=headers)
 
-                #print(response_in.json())
+                #Parse the response
                 results_1 = response_to_text(response_in.json())
                 r1_budget_new = results_1[results_1['MinPrice']<int(max(Money_list))]
                 r1_budget = pd.concat([r1_budget,r1_budget_new])             
@@ -96,7 +102,7 @@ def flight_options(Locations_list, Locations_type, Dates_list, Money_list):
             except:
                 print( st + ' to ' + en + ' flight not found \n' )
 
-                             
+    #Sort flights by nearest to date                         
     r1_budget['DepartureDate'] = pd.to_datetime(r1_budget['DepartureDate'])
     diff = r1_budget['DepartureDate'] - datetime.strptime(D1,'%Y-%m-%d')
     r1_budget['time_delta'] = diff.abs()
@@ -112,17 +118,18 @@ def flight_options(Locations_list, Locations_type, Dates_list, Money_list):
         arrive = r1_budget['DestinationId'][flight] 
         time = r1_budget['DepartureDate'][flight]
 
+        #Print flight results
         output_in = depart + ' to ' + arrive + ' for ' + str(price) + '$ on ' +  carr  + ' on ' + time.strftime("%Y-%m-%d") + '\n'
         output = output + output_in
-
         cnt1 = cnt1 + 1
 
         if cnt1>3:
             break     
                              
-                             
+    # Add results to response                         
     output = output + '\n And here are some returning flights: \n'            
     
+    #Initilize empty dataframe 
     r2_budget = pd.DataFrame(columns=['QuoteId','MinPrice','Direct','QuoteDateTime', 'CarrierIds', 'OriginId','DestinationId','DepartureDate'])
     
     cnt2 = 0
@@ -143,10 +150,10 @@ def flight_options(Locations_list, Locations_type, Dates_list, Money_list):
                 headers = { 'x-rapidapi-host': "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
                     'x-rapidapi-key': "e9ea65cb6bmsh7a9294203a09dfep163c42jsn05f9e4a2cceb"}
 
+                #Get the API response
                 response_out = requests.request("GET", url, headers=headers)
                 
-                #print(response_out.json())
-                
+                #Parse the response
                 results_2 = response_to_text(response_out.json())
                 r2_budget_new = results_2[results_2['MinPrice']<int(max(Money_list))]
                 r2_budget = pd.concat([r2_budget,r2_budget_new])    
@@ -157,6 +164,7 @@ def flight_options(Locations_list, Locations_type, Dates_list, Money_list):
             except:
                 print( st + ' to ' + en + ' flight not found \n' )
     
+    #Sort flights by nearest to date  
     r2_budget['DepartureDate'] = pd.to_datetime(r2_budget['DepartureDate'])
     diff = r2_budget['DepartureDate'] - datetime.strptime(D2,'%Y-%m-%d')
     r2_budget['time_delta'] = diff.abs()
@@ -170,37 +178,12 @@ def flight_options(Locations_list, Locations_type, Dates_list, Money_list):
         arrive = r2_budget['DestinationId'][flight] 
         time = r2_budget['DepartureDate'][flight] 
 
+        #Print flight results
         output_in = depart + ' to ' + arrive + ' for ' + str(price) + '$ on ' +  carr  + ' on ' + time.strftime("%Y-%m-%d") + '\n'
         output = output + output_in
-
         cnt2 = cnt2 + 1
 
         if cnt2>3:
             break
-                        
-    
-    
+                       
     return output
-        
-        
-#test_response = flight_options(Locations_list, Dates_list, Money_list,test)
-
-#print(test_response)
-
-#Other possible repsonse from API
-
-#url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browseroutes/v1.0/Canada/CAD/en/Toronto/New%2520York/2020-08-01/2020-09-01"
-
-#headers = {
-#    'x-rapidapi-host': "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
-#    'x-rapidapi-key': "e9ea65cb6bmsh7a9294203a09dfep163c42jsn05f9e4a2cceb"
-#    }
-
-#response = requests.request("GET", url, headers=headers)
-
-#print(response.text)
-
-#test = response.json()
-
-#test
-
